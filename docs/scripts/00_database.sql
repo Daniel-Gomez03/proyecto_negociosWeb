@@ -1,1 +1,1 @@
-CREATE SCHEMA `ecommerce` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE SCHEMA `hasbunstore` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
