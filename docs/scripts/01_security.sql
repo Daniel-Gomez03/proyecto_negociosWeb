@@ -63,14 +63,3 @@ CREATE TABLE
         CONSTRAINT `rol_funcion_key` FOREIGN KEY (`fncod`) REFERENCES `funciones` (`fncod`) ON DELETE NO ACTION ON UPDATE NO ACTION
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
-CREATE TABLE
-    `bitacora` (
-        `bitacoracod` int(11) NOT NULL AUTO_INCREMENT,
-        `bitacorafch` datetime DEFAULT NULL,
-        `bitprograma` varchar(255) DEFAULT NULL,
-        `bitdescripcion` varchar(255) DEFAULT NULL,
-        `bitobservacion` mediumtext,
-        `bitTipo` char(3) DEFAULT NULL,
-        `bitusuario` bigint(18) DEFAULT NULL,
-        PRIMARY KEY (`bitacoracod`)
-    ) ENGINE = InnoDB AUTO_INCREMENT = 10 DEFAULT CHARSET = utf8;
