@@ -16,7 +16,7 @@ CREATE TABLE `categories` (
     UNIQUE (`categoryName`)
 ) ENGINE=InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET=utf8mb4;
 
--- Tabla productos
+-- Table products
 CREATE TABLE `products` (
     `productId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `productName` VARCHAR(255) NOT NULL,
@@ -65,53 +65,116 @@ CREATE TABLE `products_blokees` (
     CONSTRAINT `fk_blokees_products` FOREIGN KEY (`blokeesProductId`) REFERENCES `products`(`productId`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET=utf8mb4;
 
--- =============================================
--- Datos iniciales
--- =============================================
+-- ===============================================
+-- INSERTAR MARCAS (BRANDS)
+-- ===============================================
 
--- brands
-INSERT INTO brands (brandName, brandDescription) VALUES 
-('Bandai', 'Fabricante japonés líder en Gunpla'),
-('LEGO', 'Empresa danesa de bloques de construcción'),
-('Blokees', 'Marca de figuras coleccionables de bloques');
+INSERT INTO `brands` (`brandName`, `brandDescription`, `brandStatus`) VALUES
+('Bandai', 'Fabricante de kits de modelo Gundam y coleccionables premium', 'ACT'),
+('LEGO', 'Compañía danesa de juguetes de construcción con bloques y sets', 'ACT'),
+('Blokees', 'Juguetes de bloques de construcción con personajes y temas populares', 'ACT'),
+('Kotobukiya', 'Fabricante japonés de kits de modelo y figuras', 'ACT'),
+('Good Smile Company', 'Fabricante japonés de figuras y artículos coleccionables', 'ACT');
 
--- Categorías
-INSERT INTO categories (categoryName, categoryDescription) VALUES
-('Gunpla', 'Modelos de Gundam para armar'),
-('Sets LEGO', 'Conjuntos de construcción LEGO'),
-('Figuras Blokees', 'Figuras coleccionables de bloques');
+-- ===============================================
+-- INSERTAR CATEGORÍAS (CATEGORIES)
+-- ===============================================
 
--- Productos
-INSERT INTO products (productName, productPrice, productStock, productBrandId, productCategoryId, productDescription, ) VALUES
--- Gunpla
-('RX-78-2 Gundam Ver. Ka', 4500.00, 15, 1, 1, 'Master Grade del icónico RX-78-2'),
-('Strike Freedom Gundam', 3200.00, 8, 1, 1, 'Real Grade con efectos especiales'),
-('Barbatos Lupus Rex', 5800.00, 5, 1, 1, 'Perfect Grade de Iron-Blooded Orphans'),
+INSERT INTO `categories` (`categoryName`, `categoryDescription`, `categoryStatus`) VALUES
+('Kits de Modelo', 'Kits de modelo de plástico para armado y personalización', 'ACT'),
+('Sets de Construcción', 'Juguetes de construcción con piezas entrelazadas', 'ACT'),
+('Coleccionables', 'Artículos de edición limitada y coleccionables', 'ACT'),
+('Figuras de Acción', 'Figuras posables y modelos de personajes', 'ACT'),
+('Accesorios', 'Herramientas, soportes y piezas de mejora', 'ACT');
 
--- LEGO
-('Millennium Falcon', 7999.00, 3, 2, 2, 'Set Ultimate Collector Series'),
-('Technic Bugatti Chiron', 3499.00, 7, 2, 2, 'Réplica detallada del superdeportivo'),
-('Creator Casa Modular', 1299.00, 12, 2, 2, 'Casa de 3 pisos modular'),
+-- ===============================================
+-- INSERTAR PRODUCTOS PRINCIPALES
+-- ===============================================
 
--- Blokees
-('Pikachu Blokees', 299.00, 25, 3, 3, 'Figura armable de Pikachu'),
-('Mario Bros Blokees', 349.00, 20, 3, 3, 'Figura de Mario en bloques'),
-('Sonic Blokees', 279.00, 18, 3, 3, 'Figura de Sonic el Erizo');
+-- Productos GUNPLA (Bandai)
+INSERT INTO `products` (`productName`, `productPrice`, `productStock`, `productBrandId`, `productCategoryId`, `productDescription`, `productImgUrl`, `productStatus`) VALUES
+('RX-78-2 Gundam', 25.99, 15, 1, 1, 'Gundam icónico de la serie original Mobile Suit Gundam', 'https://placehold.co/300x300?text=RX-78-2+Gundam&font=roboto', 'ACT'),
+('Strike Freedom Gundam', 89.99, 8, 1, 1, 'Kit Perfect Grade de alta gama con piezas de efectos especiales', 'https://placehold.co/300x300?text=Strike+Freedom&font=roboto', 'ACT'),
+('Barbatos Lupus Rex', 45.99, 12, 1, 1, 'De la serie Iron-Blooded Orphans con armazón interno detallado', 'https://placehold.co/300x300?text=Barbatos+Rex&font=roboto', 'ACT'),
+('Nu Gundam Ver Ka', 65.99, 6, 1, 1, 'Master Grade con elementos de rediseño de Katoki Hajime', 'https://placehold.co/300x300?text=Nu+Gundam&font=roboto', 'ACT'),
+('Unicorn Gundam', 55.99, 10, 1, 1, 'Kit transformable de modo Unicorn a modo Destroy', 'https://placehold.co/300x300?text=Unicorn+Gundam&font=roboto', 'ACT');
 
--- Detalles Gunpla
-INSERT INTO products_gunpla (gunplaProductId, gunplaGrade, gunplaScale, gunplaPremiumBandai, gunplaGundamBase) VALUES
-(1, 'MG', '1/100', FALSE, TRUE),
-(2, 'RG', '1/144', TRUE, FALSE),
-(3, 'PG', '1/60', FALSE, TRUE);
+-- Productos LEGO
+INSERT INTO `products` (`productName`, `productPrice`, `productStock`, `productBrandId`, `productCategoryId`, `productDescription`, `productImgUrl`, `productStatus`) VALUES
+('Halcón Milenario', 159.99, 5, 2, 2, 'Serie Ultimate Collectors del Halcón Milenario con minifiguras', 'https://placehold.co/300x300?text=Millennium+Falcon&font=roboto', 'ACT'),
+('Castillo de Hogwarts', 399.99, 3, 2, 2, 'Masivo Castillo de Hogwarts con Gran Salón y torres', 'https://placehold.co/300x300?text=Hogwarts+Castle&font=roboto', 'ACT'),
+('Lamborghini Technic', 349.99, 4, 2, 2, 'Detallado Lamborghini Sián FKP 37 con funciones de trabajo', 'https://placehold.co/300x300?text=Technic+Lambo&font=roboto', 'ACT'),
+('Autobús de Londres Creator', 89.99, 8, 2, 2, 'Autobús rojo de dos pisos de Londres con interior detallado', 'https://placehold.co/300x300?text=London+Bus&font=roboto', 'ACT'),
+('Batmobile de Batman', 229.99, 6, 2, 2, 'Serie Ultimate Collectors del Batmobile de 1989', 'https://placehold.co/300x300?text=Batmobile&font=roboto', 'ACT');
 
--- Detalles LEGO
-INSERT INTO products_lego (legoProductId, legoLine, legoSetNumber, legoPieceCount) VALUES
-(4, 'Ultimate Collector Series', '75192', 7541),
-(5, 'Technic', '42083', 3599),
-(6, 'Creator Expert', '10264', 2569);
+-- Productos BLOKEES
+INSERT INTO `products` (`productName`, `productPrice`, `productStock`, `productBrandId`, `productCategoryId`, `productDescription`, `productImgUrl`, `productStatus`) VALUES
+('Set de Construcción Pikachu', 29.99, 20, 3, 3, 'Figura adorable de Pikachu con partes movibles y accesorios', 'https://placehold.co/300x300?text=Pikachu+Blokees&font=roboto', 'ACT'),
+('Construcción Mega Charizard', 49.99, 12, 3, 3, 'Charizard a gran escala con piezas de efecto de fuego', 'https://placehold.co/300x300?text=Charizard+Blokees&font=roboto', 'ACT'),
+('Set Mario Bros', 35.99, 15, 3, 3, 'Set de construcción de Super Mario con accesorios de power-ups', 'https://placehold.co/300x300?text=Mario+Blokees&font=roboto', 'ACT'),
+('Construcción Sonic Speed', 32.99, 18, 3, 3, 'Sonic the Hedgehog con piezas de pista de loop', 'https://placehold.co/300x300?text=Sonic+Blokees&font=roboto', 'ACT'),
+('Minecraft Steve', 24.99, 25, 3, 3, 'Figura de Minecraft Steve con accesorios de bloques', 'https://placehold.co/300x300?text=Minecraft+Steve&font=roboto', 'ACT');
 
--- Detalles Blokees
-INSERT INTO products_blokees (blokeesProductId, blokeesVersion, blokeesSize) VALUES
-(7, 'Standard', 'Mediano'),
-(8, 'Special Edition', 'Grande'),
-(9, 'Classic', 'Pequeño');
+-- ===============================================
+-- INSERTAR DETALLES ESPECÍFICOS GUNPLA
+-- ===============================================
+
+INSERT INTO `products_gunpla` (`gunplaProductId`, `gunplaGrade`, `gunplaScale`, `gunplaPremiumBandai`, `gunplaGundamBase`, `gunplaStatus`) VALUES
+(1, 'Real Grade', '1/144', FALSE, FALSE, 'ACT'),
+(2, 'Perfect Grade', '1/60', TRUE, FALSE, 'ACT'),
+(3, 'High Grade', '1/144', FALSE, FALSE, 'ACT'),
+(4, 'Master Grade', '1/100', FALSE, TRUE, 'ACT'),
+(5, 'Real Grade', '1/144', FALSE, FALSE, 'ACT');
+
+-- ===============================================
+-- INSERTAR DETALLES ESPECÍFICOS LEGO
+-- ===============================================
+
+INSERT INTO `products_lego` (`legoProductId`, `legoLine`, `legoSetNumber`, `legoPieceCount`, `legoStatus`) VALUES
+(6, 'Star Wars', '75375', 1351, 'ACT'),
+(7, 'Harry Potter', '71043', 6020, 'ACT'),
+(8, 'Technic', '42115', 3696, 'ACT'),
+(9, 'Creator Expert', '10258', 1686, 'ACT'),
+(10, 'DC', '76240', 2049, 'ACT');
+
+-- ===============================================
+-- INSERTAR DETALLES ESPECÍFICOS BLOKEES
+-- ===============================================
+
+INSERT INTO `products_blokees` (`blokeesProductId`, `blokeesVersion`, `blokeesSize`, `blokeesStatus`) VALUES
+(11, 'Edición Estándar', 'Mediano (15cm)', 'ACT'),
+(12, 'Edición Deluxe', 'Grande (25cm)', 'ACT'),
+(13, 'Edición Clásica', 'Mediano (15cm)', 'ACT'),
+(14, 'Edición Speed', 'Mediano (18cm)', 'ACT'),
+(15, 'Edición Pixel', 'Pequeño (12cm)', 'ACT');
+
+-- ===============================================
+-- PRODUCTOS ADICIONALES PARA VARIEDAD
+-- ===============================================
+
+-- Más productos Gunpla
+INSERT INTO `products` (`productName`, `productPrice`, `productStock`, `productBrandId`, `productCategoryId`, `productDescription`, `productImgUrl`, `productStatus`) VALUES
+('Sazabi Ver Ka', 75.99, 4, 1, 1, 'Traje móvil personalizado de Char con psycho-frame detallado', 'https://placehold.co/300x300?text=Sazabi&font=roboto', 'ACT'),
+('Wing Gundam Zero EW', 35.99, 14, 1, 1, 'Versión de Endless Waltz con efectos de alas de ángel', 'https://placehold.co/300x300?text=Wing+Zero&font=roboto', 'ACT');
+
+INSERT INTO `products_gunpla` (`gunplaProductId`, `gunplaGrade`, `gunplaScale`, `gunplaPremiumBandai`, `gunplaGundamBase`, `gunplaStatus`) VALUES
+(16, 'Master Grade', '1/100', FALSE, TRUE, 'ACT'),
+(17, 'Real Grade', '1/144', FALSE, FALSE, 'ACT');
+
+-- Más productos LEGO
+INSERT INTO `products` (`productName`, `productPrice`, `productStock`, `productBrandId`, `productCategoryId`, `productDescription`, `productImgUrl`, `productStatus`) VALUES
+('Transbordador Espacial NASA', 199.99, 7, 2, 2, 'Transbordador Discovery con Telescopio Espacial Hubble', 'https://placehold.co/300x300?text=Space+Shuttle&font=roboto', 'ACT'),
+('Taj Mahal', 369.99, 2, 2, 2, 'Obra maestra arquitectónica con increíble detalle', 'https://placehold.co/300x300?text=Taj+Mahal&font=roboto', 'ACT');
+
+INSERT INTO `products_lego` (`legoProductId`, `legoLine`, `legoSetNumber`, `legoPieceCount`, `legoStatus`) VALUES
+(18, 'Creator Expert', '10283', 2354, 'ACT'),
+(19, 'Architecture', '21056', 2022, 'ACT');
+
+-- Más productos Blokees
+INSERT INTO `products` (`productName`, `productPrice`, `productStock`, `productBrandId`, `productCategoryId`, `productDescription`, `productImgUrl`, `productStatus`) VALUES
+('Goku Super Saiyan', 42.99, 11, 3, 3, 'Goku de Dragon Ball Z en transformación Super Saiyan', 'https://placehold.co/300x300?text=Goku+SSJ&font=roboto', 'ACT'),
+('Set Link Zelda', 38.99, 13, 3, 3, 'Link de Legend of Zelda con Espada Maestra y escudo', 'https://placehold.co/300x300?text=Link+Zelda&font=roboto', 'ACT');
+
+INSERT INTO `products_blokees` (`blokeesProductId`, `blokeesVersion`, `blokeesSize`, `blokeesStatus`) VALUES
+(20, 'Edición Power', 'Grande (22cm)', 'ACT'),
+(21, 'Edición Héroe', 'Mediano (16cm)', 'ACT');
