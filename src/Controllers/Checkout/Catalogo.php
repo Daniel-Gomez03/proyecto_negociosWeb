@@ -54,5 +54,3 @@ class Catalogo extends PrivateController
         \Views\Renderer::render("abc", array("productos" => $producto));
     }
 }
-
-?>
