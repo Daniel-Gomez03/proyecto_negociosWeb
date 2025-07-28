@@ -1,8 +1,8 @@
 <?php
-namespace Dao\Maintenance\Catalog;
+namespace Dao\Maintenance\Catalog\Products;
 use Dao\Table;
 
-class Catalog extends table{
+class ProductsDao extends table{
     
     public static function getFeaturedBrands() 
     {

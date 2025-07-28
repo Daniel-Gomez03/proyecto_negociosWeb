@@ -2,7 +2,7 @@
 namespace Dao\Maintenance\Catalog\Brands;
 use Dao\Table;
 
-class Brands extends Table {
+class BrandsDao extends Table {
 
 
 public static function getBrands(string $partialName = "", string $status = "", string $orderBy = "", bool $orderDescending = false, int $page = 0, int $itemsPerPage = 10)

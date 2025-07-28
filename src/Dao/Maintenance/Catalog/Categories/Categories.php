@@ -2,7 +2,7 @@
 namespace Dao\Maintenance\Catalog\Categoreies;
 use Dao\Table;
 
-class Categoreies extends Table {
+class CategoreiesDao extends Table {
 
 
 public static function getCategories(string $partialName = "", string $status = "", string $orderBy = "", bool $orderDescending = false, int $page = 0, int $itemsPerPage = 10)
