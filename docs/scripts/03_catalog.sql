@@ -1,3 +1,4 @@
+-- Active: 1750516748725@@127.0.0.1@3306@hasbunstore
 -- Table brands
 CREATE TABLE `brands` (
     `brandId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -148,33 +149,107 @@ INSERT INTO `products_blokees` (`blokeesProductId`, `blokeesVersion`, `blokeesSi
 (14, 'Edición Speed', 'Mediano (18cm)', 'ACT'),
 (15, 'Edición Pixel', 'Pequeño (12cm)', 'ACT');
 
--- ===============================================
--- PRODUCTOS ADICIONALES PARA VARIEDAD
--- ===============================================
 
--- Más productos Gunpla
-INSERT INTO `products` (`productName`, `productPrice`, `productStock`, `productBrandId`, `productCategoryId`, `productDescription`, `productImgUrl`, `productStatus`) VALUES
-('Sazabi Ver Ka', 75.99, 4, 1, 1, 'Traje móvil personalizado de Char con psycho-frame detallado', 'https://placehold.co/300x300?text=Sazabi&font=roboto', 'ACT'),
-('Wing Gundam Zero EW', 35.99, 14, 1, 1, 'Versión de Endless Waltz con efectos de alas de ángel', 'https://placehold.co/300x300?text=Wing+Zero&font=roboto', 'ACT');
+-- Consulta para obtener TODOS los productos con sus detalles específicos
+-- (Gunpla, LEGO, Blokees) 
+SELECT 
+    p.productId,
+    p.productName,
+    p.productDescription,
+    p.productPrice,
+    p.productImgUrl,
+    p.productStock,
+    p.productStatus,
+    b.brandName,
+    c.categoryName,
+    g.gunplaGrade,
+    g.gunplaScale,
+    g.gunplaPremiumBandai,
+    g.gunplaGundamBase,
+    l.legoLine,
+    l.legoSetNumber,
+    l.legoPieceCount,
+    bl.blokeesVersion,
+    bl.blokeesSize,
+    CASE 
+        WHEN g.gunplaId IS NOT NULL THEN 'gunpla'
+        WHEN l.legoId IS NOT NULL THEN 'lego'
+        WHEN bl.blokeesId IS NOT NULL THEN 'blokees'
+        ELSE 'otro'
+    END AS productType
+FROM products p
+INNER JOIN brands b ON p.productBrandId = b.brandId
+INNER JOIN categories c ON p.productCategoryId = c.categoryId
+LEFT JOIN products_gunpla g ON p.productId = g.gunplaProductId
+LEFT JOIN products_lego l ON p.productId = l.legoProductId
+LEFT JOIN products_blokees bl ON p.productId = bl.blokeesProductId
+WHERE p.productStatus = 'ACT'
+ORDER BY p.productId LIMIT 100
 
-INSERT INTO `products_gunpla` (`gunplaProductId`, `gunplaGrade`, `gunplaScale`, `gunplaPremiumBandai`, `gunplaGundamBase`, `gunplaStatus`) VALUES
-(16, 'Master Grade', '1/100', FALSE, TRUE, 'ACT'),
-(17, 'Real Grade', '1/144', FALSE, FALSE, 'ACT');
 
--- Más productos LEGO
-INSERT INTO `products` (`productName`, `productPrice`, `productStock`, `productBrandId`, `productCategoryId`, `productDescription`, `productImgUrl`, `productStatus`) VALUES
-('Transbordador Espacial NASA', 199.99, 7, 2, 2, 'Transbordador Discovery con Telescopio Espacial Hubble', 'https://placehold.co/300x300?text=Space+Shuttle&font=roboto', 'ACT'),
-('Taj Mahal', 369.99, 2, 2, 2, 'Obra maestra arquitectónica con increíble detalle', 'https://placehold.co/300x300?text=Taj+Mahal&font=roboto', 'ACT');
+-- Actualizar productos BLOKEES existentes a productos TRANSFORMERS
+UPDATE `products` SET 
+    `productName` = 'Blokees Transformers Galaxy V07 One Wave 2',
+    `productPrice` = 24.99,
+    `productStock` = 30,
+    `productDescription` = 'Figura sorpresa de Transformers One con articulación mejorada de 20° y accesorios únicos. Incluye personajes como Megatron, Orion Pax COGGED, Elita-1 y más',
+    `productImgUrl` = 'https://placehold.co/300x300?text=Transformers+One+Wave+2&font=roboto'
+WHERE `productName` = 'Set de Construcción Pikachu';
 
-INSERT INTO `products_lego` (`legoProductId`, `legoLine`, `legoSetNumber`, `legoPieceCount`, `legoStatus`) VALUES
-(18, 'Creator Expert', '10283', 2354, 'ACT'),
-(19, 'Architecture', '21056', 2022, 'ACT');
+UPDATE `products` SET 
+    `productName` = 'Blokees Transformers Galaxy V06 Parallel Universe',
+    `productPrice` = 26.99,
+    `productStock` = 25,
+    `productDescription` = 'Colección de figuras IDW Transformers con acabado metálico galaxy y articulación de 20 puntos. Incluye IDW Optimus Prime, Megatron y personajes únicos',
+    `productImgUrl` = 'https://placehold.co/300x300?text=Parallel+Universe&font=roboto'
+WHERE `productName` = 'Construcción Mega Charizard';
 
--- Más productos Blokees
-INSERT INTO `products` (`productName`, `productPrice`, `productStock`, `productBrandId`, `productCategoryId`, `productDescription`, `productImgUrl`, `productStatus`) VALUES
-('Goku Super Saiyan', 42.99, 11, 3, 3, 'Goku de Dragon Ball Z en transformación Super Saiyan', 'https://placehold.co/300x300?text=Goku+SSJ&font=roboto', 'ACT'),
-('Set Link Zelda', 38.99, 13, 3, 3, 'Link de Legend of Zelda con Espada Maestra y escudo', 'https://placehold.co/300x300?text=Link+Zelda&font=roboto', 'ACT');
+UPDATE `products` SET 
+    `productName` = 'Blokees Transformers Galaxy V01 Roll Out',
+    `productPrice` = 22.99,
+    `productStock` = 20,
+    `productDescription` = 'Primera edición de la colección Galaxy con personajes clásicos de Transformers en formato de construcción premium',
+    `productImgUrl` = 'https://placehold.co/300x300?text=Galaxy+V01+Roll+Out&font=roboto'
+WHERE `productName` = 'Set Mario Bros';
 
-INSERT INTO `products_blokees` (`blokeesProductId`, `blokeesVersion`, `blokeesSize`, `blokeesStatus`) VALUES
-(20, 'Edición Power', 'Grande (22cm)', 'ACT'),
-(21, 'Edición Héroe', 'Mediano (16cm)', 'ACT');
+UPDATE `products` SET 
+    `productName` = 'Blokees Transformers Galaxy V03 Autobot Run',
+    `productPrice` = 23.99,
+    `productStock` = 22,
+    `productDescription` = 'Colección centrada en los Autobots con figuras de alta calidad y accesorios especializados para cada personaje',
+    `productImgUrl` = 'https://placehold.co/300x300?text=Autobot+Run&font=roboto'
+WHERE `productName` = 'Construcción Sonic Speed';
+
+UPDATE `products` SET 
+    `productName` = 'Blokees Transformers Galaxy V02 SOS',
+    `productPrice` = 23.99,
+    `productStock` = 18,
+    `productDescription` = 'Segunda ola de la serie Galaxy con personajes de rescate y combate, incluyendo efectos especiales y armas únicas',
+    `productImgUrl` = 'https://placehold.co/300x300?text=Galaxy+V02+SOS&font=roboto'
+WHERE `productName` = 'Minecraft Steve';
+
+-- Actualizar detalles específicos de productos Blokees
+UPDATE `products_blokees` SET 
+    `blokeesVersion` = 'Galaxy Version 07 One Wave 2',
+    `blokeesSize` = 'Estándar (41-54 piezas)'
+WHERE `blokeesProductId` = 11;
+
+UPDATE `products_blokees` SET 
+    `blokeesVersion` = 'Galaxy Version 06 Parallel Universe',
+    `blokeesSize` = 'Premium (28-51 piezas, 72mm)'
+WHERE `blokeesProductId` = 12;
+
+UPDATE `products_blokees` SET 
+    `blokeesVersion` = 'Galaxy Version 01 Roll Out',
+    `blokeesSize` = 'Clásico (35-45 piezas)'
+WHERE `blokeesProductId` = 13;
+
+UPDATE `products_blokees` SET 
+    `blokeesVersion` = 'Galaxy Version 03 Autobot Run',
+    `blokeesSize` = 'Autobot Edition (40-50 piezas)'
+WHERE `blokeesProductId` = 14;
+
+UPDATE `products_blokees` SET 
+    `blokeesVersion` = 'Galaxy Version 02 SOS',
+    `blokeesSize` = 'Rescue Edition (38-48 piezas)'
+WHERE `blokeesProductId` = 15;

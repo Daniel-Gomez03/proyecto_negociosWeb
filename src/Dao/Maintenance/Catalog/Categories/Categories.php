@@ -1,117 +1,148 @@
 <?php
-namespace Dao\Maintenance\Catalog\Categoreies;
+namespace Dao\Maintenance\Catalog\Categories;
+
 use Dao\Table;
 
-class CategoreiesDao extends Table {
-
-
-public static function getCategories(string $partialName = "", string $status = "", string $orderBy = "", bool $orderDescending = false, int $page = 0, int $itemsPerPage = 10)
+class Categories extends Table
 {
-     $sqlstr = "SELECT c.categoryId, c.categoryName, c.categoryDescription, c.categoryStatus, CASE
-                WHEN c.categoryStatus = 'ACT' THEN 'Activa'
-                WHEN c.categoryStatus = 'INA' THEN 'Inactiva'
-                ELSE 'Sin Asignar'
-                END AS categoryStatusDsc
-                FROM categories c";
+    public static function getCategories(
+        string $partialName = "",
+        string $status = "",
+        string $orderBy = "",
+        bool $orderDescending = false,
+        int $page = 0,
+        int $itemsPerPage = 10
+    ) {
+        $sqlstr = "SELECT 
+            categoryId, 
+            categoryName, 
+            categoryDescription, 
+            categoryStatus,
+            CASE 
+                WHEN categoryStatus = 'ACT' THEN 'Active'
+                WHEN categoryStatus = 'INA' THEN 'Inactive'
+                ELSE 'Unknown'
+            END as categoryStatusDsc
+        FROM categories";
 
-    $sqlstrCount = "SELECT COUNT(*) as count FROM categories c";
+        $sqlstrCount = "SELECT COUNT(*) as count FROM categories";
+        $conditions = [];
+        $params = [];
 
+        if ($partialName != "") {
+            $conditions[] = "categoryName LIKE :partialName";
+            $params["partialName"] = "%" . $partialName . "%";
+        }
 
-    $conditions = [];
-    $params = [];
+        if (!in_array($status, ["ACT", "INA", ""])) {
+            throw new \Exception("Error Processing Request Status has invalid value");
+        }
 
+        if ($status != "") {
+            $conditions[] = "categoryStatus = :status";
+            $params["status"] = $status;
+        }
 
-    if ($partialName != "") {
-        $conditions[] = "c.categoryName LIKE :partialName"; 
-        $params["partialName"] = "%" . $partialName . "%";
+        if (count($conditions) > 0) {
+            $sqlstr .= " WHERE " . implode(" AND ", $conditions);
+            $sqlstrCount .= " WHERE " . implode(" AND ", $conditions);
+        }
+
+        if (!in_array($orderBy, ["categoryId", "categoryName", ""])) {
+            throw new \Exception("Error Processing Request OrderBy has invalid value");
+        }
+
+        if ($orderBy != "") {
+            $sqlstr .= " ORDER BY " . $orderBy;
+            if ($orderDescending) {
+                $sqlstr .= " DESC";
+            }
+        }
+
+        $numeroDeRegistros = self::obtenerUnRegistro($sqlstrCount, $params)["count"];
+        $pagesCount = ceil($numeroDeRegistros / $itemsPerPage);
+
+        if ($page > $pagesCount - 1) {
+            $page = $pagesCount - 1;
+        }
+
+        $sqlstr .= " LIMIT " . $page * $itemsPerPage . ", " . $itemsPerPage;
+
+        $registros = self::obtenerRegistros($sqlstr, $params);
+        return ["categories" => $registros, "total" => $numeroDeRegistros, "page" => $page, "itemsPerPage" => $itemsPerPage];
     }
-    if (!in_array($status, ["ACT", "INA", ""])) {
-      throw new \Exception("Error Processing Request Status has invalid value");
+
+    public static function getCategoryById(int $categoryId)
+    {
+        $sqlstr = "SELECT 
+            categoryId, 
+            categoryName, 
+            categoryDescription, 
+            categoryStatus
+        FROM categories 
+        WHERE categoryId = :categoryId";
+
+        $params = ["categoryId" => $categoryId];
+        return self::obtenerUnRegistro($sqlstr, $params);
     }
-    if ($status != "") {
-        $conditions[] = "c.categoryStatus = :status"; 
-        $params["status"] = $status;
+
+    public static function insertCategory(
+        string $categoryName,
+        string $categoryDescription,
+        string $categoryStatus = 'ACT'
+    ) {
+        $sqlstr = "INSERT INTO categories (
+            categoryName, 
+            categoryDescription, 
+            categoryStatus
+        ) VALUES (
+            :categoryName, 
+            :categoryDescription, 
+            :categoryStatus
+        )";
+
+        $params = [
+            "categoryName" => $categoryName,
+            "categoryDescription" => $categoryDescription,
+            "categoryStatus" => $categoryStatus
+        ];
+
+        return self::executeNonQuery($sqlstr, $params);
     }
-    if (count($conditions) > 0) {
-        //misma cosa pero el wherecaluse es como funcion
-        $whereClause = " WHERE " . implode(" AND ", $conditions);
-        $sqlstr .= $whereClause;
-        $sqlstrCount .= $whereClause;
+
+    public static function updateCategory(
+        int $categoryId,
+        string $categoryName,
+        string $categoryDescription,
+        string $categoryStatus
+    ) {
+        $sqlstr = "UPDATE categories SET 
+            categoryName = :categoryName, 
+            categoryDescription = :categoryDescription, 
+            categoryStatus = :categoryStatus
+        WHERE categoryId = :categoryId";
+
+        $params = [
+            "categoryId" => $categoryId,
+            "categoryName" => $categoryName,
+            "categoryDescription" => $categoryDescription,
+            "categoryStatus" => $categoryStatus
+        ];
+
+        return self::executeNonQuery($sqlstr, $params);
     }
-    if (!in_array($orderBy, ["categoryId", "categoryName", ""])) {
-        throw new \Exception("Error Processing Request: OrderBy has invalid value");
+
+    public static function deleteCategory(int $categoryId)
+    {
+        $sqlstr = "DELETE FROM categories WHERE categoryId = :categoryId";
+        $params = ["categoryId" => $categoryId];
+        return self::executeNonQuery($sqlstr, $params);
     }
-    if ($orderBy != "") {
-      $sqlstr .= " ORDER BY " . $orderBy;
-      if ($orderDescending) {
-        $sqlstr .= " DESC";
-      }
+
+    public static function getActiveCategories()
+    {
+        $sqlstr = "SELECT categoryId as value, categoryName as text FROM categories 
+               WHERE categoryStatus = 'ACT' ORDER BY categoryName";
+        return self::obtenerRegistros($sqlstr, []) ?: [];
     }
-    $numeroDeRegistros = self::obtenerUnRegistro($sqlstrCount, $params)["count"];
-    $pagesCount = ceil($numeroDeRegistros / $itemsPerPage);
-    if ($page > $pagesCount - 1) {
-
-        //esto hace que el incide no de las paginas no sea -1 cuando no hay registros
-        //no se si les parece?
-      $page = max($pagesCount - 1, 0);
-    }
-    $sqlstr .= " LIMIT " . $page * $itemsPerPage . ", " . $itemsPerPage;
-
-    $registros = self::obtenerRegistros($sqlstr, $params);
-
-
-    return [
-        "categories" => $registros,
-        "total" => $numeroDeRegistros,
-        "page" => $page,
-        "itemsPerPage" => $itemsPerPage
-    ];
-}
-
-
-public static function getCategoryById(int $categoryId) 
-{
-  $sqlstr = "SELECT c.categoryId, c.categoryName, c.categoryDescription, c.categoryStatus
-             FROM categories c
-             WHERE c.categoryId = :categoryId";
-  $params = ["categoryId" => $categoryId];
-  return self::obtenerUnRegistro($sqlstr, $params);
-}
-
-
-
-public static function insertCategory(string $categoryName, string $categoryDescription, string $categoryStatus) 
-{
-  $sqlstr = "INSERT INTO categories (categoryName, categoryDescription, categoryStatus) VALUES (:categoryName, :categoryDescription, :categoryStatus)";
-  $params = [
-    "categoryName" => $categoryName,
-    "categoryDescription" => $categoryDescription,
-    "categoryStatus" => $categoryStatus
-  ];
-  return self::executeNonQuery($sqlstr, $params);
-}
-
-
-
-public static function updateCategory(int $categoryId, string $categoryName, string $categoryDescription, string $categoryStatus) 
-{
-  $sqlstr = "UPDATE categories SET categoryName = :categoryName, categoryDescription = :categoryDescription, categoryStatus = :categoryStatus WHERE categoryId = :categoryId";
-  $params = [
-    "categoryId" => $categoryId,
-    "categoryName" => $categoryName,
-    "categoryDescription" => $categoryDescription,
-    "categoryStatus" => $categoryStatus
-  ];
-  return self::executeNonQuery($sqlstr, $params);
-}
-
-
-public static function deleteCategory(int $categoryId) 
-{
-  $sqlstr = "DELETE FROM categories WHERE categoryId = :categoryId";
-  $params = ["categoryId" => $categoryId];
-  return self::executeNonQuery($sqlstr, $params);
-}
-
-
 }
