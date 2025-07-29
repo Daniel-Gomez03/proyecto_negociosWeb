@@ -48,6 +48,7 @@ class Dao {
                 )
             );
         }
+
         return self::$_conn;
     }
 }

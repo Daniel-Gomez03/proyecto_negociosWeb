@@ -17,6 +17,8 @@ use Utilities\Site;
 require __DIR__ . '/vendor/autoload.php';
 session_start();
 
+
+
 try {
     Site::configure();
     $pageRequest = Site::getPageRequest();

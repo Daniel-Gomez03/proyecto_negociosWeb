@@ -18,6 +18,13 @@ class Validators {
         return preg_match("/^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,32}$/", $valor) && true;
     }
 
+    static public function IsValidUsername($valor) {
+    return preg_match('/^[a-zA-Z0-9._]{4,20}$/', $valor) && true;
+}
+
+
+
+
     private function __construct()
     {
         

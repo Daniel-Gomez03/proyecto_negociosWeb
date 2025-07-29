@@ -38,17 +38,10 @@ class Login extends \Controllers\PublicController
                         );
                     }
                     if (!\Dao\Security\Security::verifyPassword($this->txtPswd, $dbUser["userpswd"])) {
-                        $this->generalError = "¡Credenciales son incorrectas!";
-                        $this->hasError = true;
-                        error_log(
-                            sprintf(
-                                "ERROR: %d %s contraseña incorrecta",
-                                $dbUser["usercod"],
-                                $dbUser["useremail"]
-                            )
-                        );
-                        // Aqui se debe establecer acciones segun la politica de la institucion.
-                    }
+    $this->generalError = "¡Credenciales incorrectas!";
+    $this->hasError = true;
+}
+
                     if (! $this->hasError) {
                         \Utilities\Security::login(
                             $dbUser["usercod"],
