@@ -37,9 +37,17 @@ class Login extends \Controllers\PublicController
                             )
                         );
                     }
+
+
+
                     if (!\Dao\Security\Security::verifyPassword($this->txtPswd, $dbUser["userpswd"])) {
-    $this->generalError = "¡Credenciales incorrectas!";
+    $this->generalError = "¡password!";
     $this->hasError = true;
+
+
+    
+
+
 }
 
                     if (! $this->hasError) {
