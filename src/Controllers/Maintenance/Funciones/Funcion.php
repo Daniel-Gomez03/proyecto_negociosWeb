@@ -146,8 +146,8 @@ class Funcion extends PublicController {
         $this->viewData["funcion_xss_token"] = $this->funcion_xss_token;
         $this->viewData["FormTitle"] = sprintf(
             $this->modeDescriptions[$this->mode],
-            $this->funcion["funcod"],
-            $this->funcion["funcdsc"]
+            $this->funcion["funcdsc"] = $_POST["funcdsc"] ?? "",
+            $this->funcion["funcest"] = $_POST["funcest"] ?? ""
         );
         $this->viewData["showCommitBtn"] = $this->showCommitBtn;
         $this->viewData["readonly"] = $this->readonly;
