@@ -11,6 +11,8 @@ CREATE TABLE
         CONSTRAINT `carretilla_prd_key` FOREIGN KEY (`productId`) REFERENCES `products` (`productId`) ON DELETE NO ACTION ON UPDATE NO ACTION
     );
 
+
+
 CREATE TABLE
     `carretillaanon` (
         `anoncod` varchar(128) NOT NULL,

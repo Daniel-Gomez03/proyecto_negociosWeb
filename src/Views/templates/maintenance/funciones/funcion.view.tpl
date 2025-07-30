@@ -17,21 +17,21 @@
     </div>
 
     <div class="row my-2 align-center">
-      <label class="col-12 col-m-3" for="fndsc">Descripción</label>
-      <input class="col-12 col-m-9" {{~readonly}} type="text" name="fndsc" id="fndsc"
-        placeholder="Descripción de la Función" value="{{fndsc}}" />
-      {{if fndsc_error}}
+      <label class="col-12 col-m-3" for="funcdsc">Descripción</label>
+      <input class="col-12 col-m-9" {{~readonly}} type="text" name="funcdsc" id="funcdsc"
+        placeholder="Descripción de la Función" value="{{funcdsc}}" />
+      {{if funcdsc_error}}
       <div class="col-12 col-m-9 offset-m-3 error">
-        {{fndsc_error}}
+        {{funcdsc_error}}
       </div>
-      {{endif fndsc_error}}
+      {{endif funcdsc_error}}
     </div>
 
     <div class="row my-2 align-center">
-      <label class="col-12 col-m-3" for="fnest">Estado</label>
-      <select name="fnest" id="fnest" class="col-12 col-m-9" {{if ~readonly}} readonly disabled {{endif ~readonly}}>
-        <option value="ACT" {{fnest_act}}>Activo</option>
-        <option value="INA" {{fnest_ina}}>Inactivo</option>
+      <label class="col-12 col-m-3" for="funcest">Estado</label>
+      <select name="funcest" id="funcest" class="col-12 col-m-9" {{if ~readonly}} readonly disabled {{endif ~readonly}}>
+        <option value="ACT" {{funcest_act}}>Activo</option>
+        <option value="INA" {{funcest_ina}}>Inactivo</option>
       </select>
     </div>
 
