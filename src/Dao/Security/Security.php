@@ -61,6 +61,8 @@ class Security extends \Dao\Table
 
 
         $newUser = self::_usuarioStruct();
+
+        
         //Tratamiento de la Contraseña
         $hashedPassword = self::_hashPassword($password);
 
@@ -106,10 +108,10 @@ class Security extends \Dao\Table
         );
     }
 
-    static private function _hashPassword($password)
-    {
-        return password_hash(self::_saltPassword($password), PASSWORD_ALGORITHM);
-    }
+   private static function _hashPassword($password) {
+    return password_hash($password, PASSWORD_DEFAULT);
+}
+
 
     static public function verifyPassword($raw_password, $hash_password)
 {

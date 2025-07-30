@@ -11,18 +11,11 @@
 
      class Users extends Table {
 
-        static private function _hashPassword($password)
-    {
-        return password_hash(self::_saltPassword($password), PASSWORD_ALGORITHM);
-    }
-     static private function _saltPassword($password)
-    {
-        return hash_hmac(
-            "sha256",
-            $password,
-            \Utilities\Context::getContextByKey("PWD_HASH")
-        );
-    }
+     private static function _hashPassword($password) {
+    return password_hash($password, PASSWORD_DEFAULT);
+}
+
+   
 
 
 
