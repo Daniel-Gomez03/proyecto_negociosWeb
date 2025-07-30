@@ -1,13 +1,13 @@
 <?php
 namespace Controllers\Maintenance\Catalog\Products;
 
-use Controllers\PublicController;
+use Controllers\PrivateController;
 use Utilities\Context;
 use Utilities\Paging;
 use Dao\Maintenance\Catalog\Products\Products as DaoProducts;
 use Views\Renderer;
 
-class Products extends PublicController
+class Products extends PrivateController
 {
     private $partialName = "";
     private $status = "";
@@ -15,10 +15,25 @@ class Products extends PublicController
     private $orderDescending = false;
     private $pageNumber = 1;
     private $itemsPerPage = 10;
-    private $viewData = [];
+    
     private $products = [];
     private $productsCount = 0;
     private $pages = 0;
+
+    private arry $viewData;
+        public function __construct()
+        {
+            parent::__construct();
+            $this->viewData=[];
+            $this->viewData["isNewEnabled"]=parent::isFeatureAutorized($this->name . "\\new");
+            $this->viewData["isUpdateEnabled"]=parent::isFeatureAutorized($this->name . "\\update");
+            $this->viewData["isDeleteEnabled"]=parent::isFeatureAutorized($this->name . "\\delete");
+        }
+    /*
+    Public function runn(): void{
+         $this->viewData["products"]= DaoProducts::getProducts();
+         Renderer::render("maintenance/catalog/products/products", $this->viewData);
+    }*/
 
     public function run(): void
     {
