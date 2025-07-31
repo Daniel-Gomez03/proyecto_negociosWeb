@@ -98,63 +98,43 @@
     string $useremail,
     string $username,
     string $userpswd,
-    string $userpswdest,
     string $userest,
-    string $usertipo,
-    string $userfching,
-    string $userpswdexp,
-    string $useractcod,
-    string $userpswdchg
+    string $usertipo
 ) {
-
-    $hashedPassword = "";
-    if (!empty($userpswd)) {
-
-        $hashedPassword = password_hash($userpswd, PASSWORD_BCRYPT);
-    }
-
     $sqlstr = "UPDATE usuario SET 
         useremail = :useremail,
-        username = :username,";
-
-    if (!empty($userpswd)) {
-        $sqlstr .= " userpswd = :userpswd,";
-    }
-
-    $sqlstr .= "
-        userpswdest = :userpswdest,
+        username = :username,
         userest = :userest,
-        usertipo = :usertipo,
-        userfching = :userfching,
-        userpswdexp = :userpswdexp,
-        useractcod = :useractcod,
-        userpswdchg = :userpswdchg
-    WHERE usercod = :usercod";
+        usertipo = :usertipo";
 
     $params = [
         "usercod" => $usercod,
         "useremail" => $useremail,
         "username" => $username,
-        "userpswdest" => $userpswdest,
         "userest" => $userest,
-        "usertipo" => $usertipo,
-        "userfching" => $userfching,
-        "userpswdexp" => $userpswdexp,
-        "useractcod" => $useractcod,
-        "userpswdchg" => $userpswdchg
+        "usertipo" => $usertipo
     ];
 
+    // Solo agregamos contraseña si se envía una nueva
     if (!empty($userpswd)) {
+        $hashedPassword = password_hash($userpswd, PASSWORD_BCRYPT);
+        $sqlstr .= ", userpswd = :userpswd";
         $params["userpswd"] = $hashedPassword;
     }
+
+    $sqlstr .= " WHERE usercod = :usercod";
 
     return self::executeNonQuery($sqlstr, $params);
 }
 
 
 
-        public static function deleteUser(int $int) {
+
+       public static function deleteUser(string $usercod) {
             $sqlstr = "DELETE FROM usuario WHERE usercod = :usercod;";
-            return self::executeNonQuery($sqlstr, ["usercod" => $int]);
+            return self::executeNonQuery($sqlstr, ["usercod" => $usercod]);
         }
+
+
+
     }

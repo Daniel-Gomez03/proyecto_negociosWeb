@@ -99,14 +99,14 @@ class Security extends \Dao\Table
         return self::obtenerUnRegistro($sqlstr, $params);
     }
 
-    static private function _saltPassword($password)
+    /*static private function _saltPassword($password)
     {
         return hash_hmac(
             "sha256",
             $password,
             \Utilities\Context::getContextByKey("PWD_HASH")
         );
-    }
+    }*/
 
    private static function _hashPassword($password) {
     return password_hash($password, PASSWORD_DEFAULT);

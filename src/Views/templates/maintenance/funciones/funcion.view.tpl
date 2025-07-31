@@ -4,7 +4,7 @@
 
 <section class="container-m row px-4 py-4">
   {{with funcion}}
-  <form action="index.php?page=Funciones_Funcion&mode={{~mode}}&id={{fncod}}" method="POST"
+  <form action="index.php?page=Maintenance_Funciones_Funciones={{~mode}}&id={{fncod}}" method="POST"
     class="col-12 col-m-8 offset-m-2">
 
     <div class="row my-2 align-center">

@@ -3,12 +3,12 @@
     {
       "id": "Menu_SignIn",
       "nav_url": "index.php?page=Sec_Login",
-      "nav_label":"<i class=\"fas fa-sign-in-alt\"></i>&nbsp;Iniciar Sesión"
+      "nav_label": "<i class=\"fas fa-sign-in-alt\"></i>&nbsp;Iniciar Sesión"
     },
-     {
+    {
       "id": "Menu_SignUp",
       "nav_url": "index.php?page=Sec_Register",
-      "nav_label":"<i class=\"fas fa-sign-in-alt\"></i>&nbsp;Crear Cuenta"
+      "nav_label": "<i class=\"fas fa-sign-in-alt\"></i>&nbsp;Crear Cuenta"
     },
     {
       "id": "Menu_Catalog",
@@ -18,7 +18,7 @@
   ],
   "private": [
     {
-      "id":"Menu_PaymentCheckout",
+      "id": "Menu_PaymentCheckout",
       "nav_url": "index.php?page=Checkout_Checkout",
       "nav_label": "Carretilla de Compra"
     },
@@ -31,6 +31,31 @@
       "id": "Menu_OrdersHistory",
       "nav_url": "index.php?page=Orders_History",
       "nav_label": "<i class=\"fas fa-table\"></i>&nbsp;Historial de Pedidos"
+    },
+    {
+      "id": "User_table",
+      "nav_url": "index.php?page=Maintenance_Users_Users",
+      "nav_label": "<i class=\"fas fa-sign-in-alt\"></i>&nbsp;Tabla User"
+    },
+    {
+      "id": "Funciones_table",
+      "nav_url": "index.php?page=Maintenance_Funciones_Funciones",
+      "nav_label": "<i class=\"fas fa-tools\"></i>&nbsp;Tabla Funciones"
+    },
+    {
+      "id": "Roles_table",
+      "nav_url": "index.php?page=Maintenance_Roles_Roles",
+      "nav_label": "<i class=\"fas fa-user-tag\"></i>&nbsp;Tabla Roles"
+    },
+    {
+      "id": "Brands_table",
+      "nav_url": "index.php?page=Maintenance_Catalog_Brands_Brands",
+      "nav_label": "<i class=\"fas fa-tags\"></i>&nbsp;Tabla Marcas"
+    },
+    {
+      "id": "Categories_table",
+      "nav_url": "index.php?page=Maintenance_Catalog_Categories_Categories",
+      "nav_label": "<i class=\"fas fa-list\"></i>&nbsp;Tabla Categorías"
     }
   ]
 }
