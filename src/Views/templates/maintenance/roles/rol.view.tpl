@@ -6,14 +6,20 @@
   {{with role}}
   <form action="index.php?page=Maintenance_Roles_Rol&mode={{~mode}}&id={{rolescod}}" method="POST"
     class="col-12 col-m-8 offset-m-2">
+
+
+
     <div class="row my-2 align-center">
-      <label class="col-12 col-m-3" for="rolescodD">Código</label>
-      <input class="col-12 col-m-9" {{~readonly}} type="text" name="rolescodD" id="rolescodD"
-        value="{{rolescod}}" />
-      <input type="hidden" name="mode" value="{{~mode}}" />
-      <input type="hidden" name="rolescod" value="{{rolescod}}" />
-      <input type="hidden" name="roles_xss_token" value="{{~roles_xss_token}}" />
-    </div>
+  <label class="col-12 col-m-3" for="rolescod">Código</label>
+  <input class="col-12 col-m-9" type="text" name="rolescod" id="rolescod" value="{{rolescod}}" />
+  <input type="hidden" name="old_rolescod" value="{{rolescod}}" />
+  <input type="hidden" name="mode" value="{{mode}}" />
+  <input type="hidden" name="roles_xss_token" value="{{roles_xss_token}}" />
+</div>
+
+
+   
+
 
     <div class="row my-2 align-center">
       <label class="col-12 col-m-3" for="rolesdsc">Descripción</label>

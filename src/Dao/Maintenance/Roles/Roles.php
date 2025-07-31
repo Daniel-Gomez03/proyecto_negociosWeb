@@ -84,17 +84,19 @@
             return self::executeNonQuery($sqlstr, $params);
         }
 
-        public static function updateRole(string $rolescod, string $rolesdsc, string $rolesest) {
-            $sqlstr = "UPDATE roles 
-                    SET rolesdsc = :rolesdsc, rolesest = :rolesest 
-                    WHERE rolescod = :rolescod;";
-            $params = [
-                "rolescod" => $rolescod,
-                "rolesdsc" => $rolesdsc,
-                "rolesest" => $rolesest
-            ];
-            return self::executeNonQuery($sqlstr, $params);
-        }
+        public static function updateRole(string $oldCod, string $newCod, string $rolesdsc, string $rolesest) {
+    $sqlstr = "UPDATE roles 
+               SET rolescod = :newCod, rolesdsc = :rolesdsc, rolesest = :rolesest
+               WHERE rolescod = :oldCod;";
+    $params = [
+        "newCod" => $newCod,
+        "rolesdsc" => $rolesdsc,
+        "rolesest" => $rolesest,
+        "oldCod" => $oldCod
+    ];
+    return self::executeNonQuery($sqlstr, $params);
+}
+
 
         public static function deleteRole(string $rolescod) {
             $sqlstr = "DELETE FROM roles WHERE rolescod = :rolescod;";
