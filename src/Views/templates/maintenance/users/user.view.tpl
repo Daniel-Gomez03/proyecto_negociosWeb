@@ -68,11 +68,15 @@
       <button class="primary col-12 col-m-2" type="submit" name="btnConfirmar">Confirmar</button>
       &nbsp;
       {{endif showCommitBtn}}
+      
       <button class="col-12 col-m-2" type="button" id="btnCancelar">
         {{if showCommitBtn}} Cancelar {{endif showCommitBtn}}
         {{ifnot showCommitBtn}} Regresar {{endifnot showCommitBtn}}
       </button>
     </div>
+
+
+
   </form>
 </section>
 

@@ -151,27 +151,27 @@
             }
         }
 
-        private function handleUpdate() {
-    // Si el campo de contraseña viene vacío, no se actualiza
-    if (empty($this->user["userpswd"])) {
+    private function handleUpdate() 
+    {
+   
+
+    if (!empty($this->user["userpswd"])){
+       $this->user["userpswd"]=password_hash($this->user["userpswd"], PASSWORD_BCRYPT);
+    } else {
         $currentUser = UsersDao::getUserById($this->user["usercod"]);
         $this->user["userpswd"] = $currentUser["userpswd"]; // Se conserva la actual
-    } else {
-        $this->user["userpswd"] = password_hash($this->user["userpswd"], PASSWORD_BCRYPT); // Nueva contraseña
     }
 
-    $result = UsersDao::updateUser(
+    
+    // Actualizar el usuario
+
+        $result = UsersDao::updateUser(
         $this->user["usercod"],
         $this->user["useremail"],
         $this->user["username"],
         $this->user["userpswd"],        
-        $this->user["userpswdest"],
         $this->user["userest"],
-        $this->user["usertipo"],
-        $this->user["userfching"],
-        $this->user["userpswdexp"],
-        $this->user["useractcod"],
-        $this->user["userpswdchg"]
+        $this->user["usertipo"]
     );
 
     if ($result > 0) {
@@ -184,14 +184,15 @@
 
 
         private function handleDelete() {
-            $result = UsersDao::deleteUser($this->user["usercod"]);
+            $result = UserDao::deleteUser($this->user["usercod"]);
             if ($result > 0) {
                 Site::redirectToWithMsg(
                     "index.php?page=Maintenance_Users_Users",
-                    "Usuario eliminado exitosamente"
+                    "User eliminado exitosamente"
                 );
             }
         }
+
 
         private function setViewData(): void {
             $this->viewData["mode"] = $this->mode;
