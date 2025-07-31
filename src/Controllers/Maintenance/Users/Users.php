@@ -2,13 +2,13 @@
 
     namespace Controllers\Maintenance\Users;
 
-    use Controllers\PublicController;
+    use Controllers\PrivateController;
     use Utilities\Context;
     use Utilities\Paging;
     use Dao\Maintenance\Users\Users as DaoUsers;
     use Views\Renderer;
 
-    class Users extends PublicController {
+    class Users extends PrivateController {
         private $partialName = "";
         private $status = "";
         private $orderBy = "";

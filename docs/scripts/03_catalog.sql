@@ -8,7 +8,7 @@ CREATE TABLE `brands` (
     UNIQUE (`brandName`)
 ) ENGINE=InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET=utf8mb4;
 
--- Table categories
+-- Tab`le categories
 CREATE TABLE `categories` (
     `categoryId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `categoryName` VARCHAR(255) NOT NULL,
