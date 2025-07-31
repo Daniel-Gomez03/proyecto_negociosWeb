@@ -65,7 +65,7 @@ class Products extends PrivateController
         if ($this->status === "EMP") {
             $this->status = "";
         }
-        $this->orderBy = isset($_GET["orderBy"]) && in_array($_GET["orderBy"], ["productId", "productName", "productPrice", "brandName", "categoryName", "productType", "clear"]) ? $_GET["orderBy"] : $this->orderBy;
+        $this->orderBy = isset($_GET["orderBy"]) && in_array($_GET["orderBy"], ["productId", "productName", "productPrice", "brandName", "categoryName", "clear"]) ? $_GET["orderBy"] : $this->orderBy;
         if ($this->orderBy === "clear") {
             $this->orderBy = "";
         }

@@ -1,0 +1,176 @@
+/* Estilos generales */
+.container-invoice {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+/* Encabezado */
+.logo-img {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.company-logo {
+    max-height: 100px;
+    max-width: 100%;
+}
+
+.invoice-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.invoice-header h1 {
+    margin: 0;
+    font-size: 2rem;
+    color: #2c3e50;
+}
+
+.invoice-id {
+    font-size: 1rem;
+    color: #7f8c8d;
+    font-weight: normal;
+}
+
+.logo-icon i {
+    font-size: 2.5rem;
+    color: #3498db;
+}
+
+/* Secciones */
+.invoice-section {
+    margin: 2rem 0;
+    padding: 1rem 0;
+    border-top: 1px solid #ecf0f1;
+}
+
+.invoice-section h3 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+}
+
+/* Filas */
+.invoice-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 0.75rem 0;
+    padding: 0.5rem 0;
+}
+
+.invoice-row .label {
+    font-weight: 600;
+    color: #34495e;
+}
+
+.invoice-row .label i {
+    margin-right: 0.5rem;
+    width: 1.25rem;
+    text-align: center;
+    color: #3498db;
+}
+
+/* Tabla de productos */
+.invoice-products {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+}
+
+.invoice-products th, 
+.invoice-products td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #ecf0f1;
+}
+
+.invoice-products th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* Totales */
+.invoice-totals {
+    margin-top: 2rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+
+.total-row {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #2c3e50;
+    border-top: 2px solid #3498db;
+    padding-top: 1rem;
+    margin-top: 1rem;
+}
+
+/* Botones */
+.invoice-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+    gap: 1rem;
+}
+
+.print-button, 
+.return-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.print-button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.print-button:hover {
+    background-color: #2980b9;
+}
+
+.return-button {
+    background-color: #f8f9fa;
+    color: #2c3e50;
+    border: 1px solid #ddd;
+}
+
+.return-button:hover {
+    background-color: #e9ecef;
+}
+
+/* Estilos para impresión */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    .container-invoice, .container-invoice * {
+        visibility: visible;
+    }
+    .container-invoice {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        box-shadow: none;
+    }
+    .invoice-actions {
+        display: none;
+    }
+}

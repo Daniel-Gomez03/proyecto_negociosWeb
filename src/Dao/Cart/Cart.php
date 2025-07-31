@@ -6,94 +6,128 @@ class Cart extends \Dao\Table
 {
     public static function getProductosDisponibles()
     {
-        $sqlAllProductosActivos = "SELECT * from products where productStatus in ('ACT');";
+        $sqlAllProductosActivos = "SELECT
+                p.*,
+                b.brandName,
+                c.categoryName
+            FROM products p
+            INNER JOIN brands b ON p.productBrandId = b.brandId
+            INNER JOIN categories c ON p.productCategoryId = c.categoryId
+            WHERE p.productStatus = 'ACT'";
+
         $productosDisponibles = self::obtenerRegistros($sqlAllProductosActivos, array());
 
-        //Sacar el stock de productos con carretilla autorizada
+        // Sacar el stock de productos con carretilla autorizada
         $deltaAutorizada = \Utilities\Cart\CartFns::getAuthTimeDelta();
-        $sqlCarretillaAutorizada = "select productId, sum(crrctd) as reserved
-            from carretilla where TIME_TO_SEC(TIMEDIFF(now(), crrfching)) <= :delta
-            group by productId;";
+        $sqlCarretillaAutorizada = "SELECT productId, SUM(crrctd) as reserved
+            FROM carretilla WHERE TIME_TO_SEC(TIMEDIFF(now(), crrfching)) <= :delta
+            GROUP BY productId";
         $prodsCarretillaAutorizada = self::obtenerRegistros(
             $sqlCarretillaAutorizada,
             array("delta" => $deltaAutorizada)
         );
-        //Sacar el stock de productos con carretilla no autorizada
+
+        // Sacar el stock de productos con carretilla no autorizada
         $deltaNAutorizada = \Utilities\Cart\CartFns::getUnAuthTimeDelta();
-        $sqlCarretillaNAutorizada = "select productId, sum(crrctd) as reserved
-            from carretillaanon where TIME_TO_SEC(TIMEDIFF(now(), crrfching)) <= :delta
-            group by productId;";
+        $sqlCarretillaNAutorizada = "SELECT productId, SUM(crrctd) as reserved
+            FROM carretillaanon WHERE TIME_TO_SEC(TIMEDIFF(now(), crrfching)) <= :delta
+            GROUP BY productId";
         $prodsCarretillaNAutorizada = self::obtenerRegistros(
             $sqlCarretillaNAutorizada,
             array("delta" => $deltaNAutorizada)
         );
+
         $productosCurados = array();
         foreach ($productosDisponibles as $producto) {
             if (!isset($productosCurados[$producto["productId"]])) {
                 $productosCurados[$producto["productId"]] = $producto;
             }
         }
+
         foreach ($prodsCarretillaAutorizada as $producto) {
             if (isset($productosCurados[$producto["productId"]])) {
                 $productosCurados[$producto["productId"]]["productStock"] -= $producto["reserved"];
             }
         }
+
         foreach ($prodsCarretillaNAutorizada as $producto) {
             if (isset($productosCurados[$producto["productId"]])) {
                 $productosCurados[$producto["productId"]]["productStock"] -= $producto["reserved"];
             }
         }
-        $productosDisponibles = null;
-        $prodsCarretillaAutorizada = null;
-        $prodsCarretillaNAutorizada = null;
-        return $productosCurados;
+
+        return array_values($productosCurados);
     }
 
     public static function getProductoDisponible($productId)
     {
-        $sqlAllProductosActivos = "SELECT * from products where productStatus in ('ACT') and productId=:productId;";
-        $productosDisponibles = self::obtenerRegistros($sqlAllProductosActivos, array("productId" => $productId));
+        $sqlAllProductosActivos = "SELECT
+                p.*,
+                b.brandName,
+                c.categoryName
+            FROM products p
+            INNER JOIN brands b ON p.productBrandId = b.brandId
+            INNER JOIN categories c ON p.productCategoryId = c.categoryId
+            WHERE p.productStatus = 'ACT' AND p.productId = :productId";
 
-        //Sacar el stock de productos con carretilla autorizada
+        $productosDisponibles = self::obtenerRegistros($sqlAllProductosActivos, array("productId" => $productId));
+        if (empty($productosDisponibles)) {
+            return null;
+        }
+
+        $producto = $productosDisponibles[0];
+
+        // Sacar el stock reservado en carretillas
         $deltaAutorizada = \Utilities\Cart\CartFns::getAuthTimeDelta();
-        $sqlCarretillaAutorizada = "select productId, sum(crrctd) as reserved
-            from carretilla where productId=:productId and TIME_TO_SEC(TIMEDIFF(now(), crrfching)) <= :delta
-            group by productId;";
-        $prodsCarretillaAutorizada = self::obtenerRegistros(
+        $sqlCarretillaAutorizada = "SELECT SUM(crrctd) as reserved
+            FROM carretilla
+            WHERE productId = :productId
+            AND TIME_TO_SEC(TIMEDIFF(now(), crrfching)) <= :delta";
+
+        $reservadoAutorizado = self::obtenerUnRegistro(
             $sqlCarretillaAutorizada,
             array("productId" => $productId, "delta" => $deltaAutorizada)
         );
-        //Sacar el stock de productos con carretilla no autorizada
+
         $deltaNAutorizada = \Utilities\Cart\CartFns::getUnAuthTimeDelta();
-        $sqlCarretillaNAutorizada = "select productId, sum(crrctd) as reserved
-            from carretillaanon where productId = :productId and TIME_TO_SEC(TIMEDIFF(now(), crrfching)) <= :delta
-            group by productId;";
-        $prodsCarretillaNAutorizada = self::obtenerRegistros(
+        $sqlCarretillaNAutorizada = "SELECT SUM(crrctd) as reserved
+            FROM carretillaanon
+            WHERE productId = :productId
+            AND TIME_TO_SEC(TIMEDIFF(now(), crrfching)) <= :delta";
+
+        $reservadoNoAutorizado = self::obtenerUnRegistro(
             $sqlCarretillaNAutorizada,
             array("productId" => $productId, "delta" => $deltaNAutorizada)
         );
-        $productosCurados = array();
-        foreach ($productosDisponibles as $producto) {
-            if (!isset($productosCurados[$producto["productId"]])) {
-                $productosCurados[$producto["productId"]] = $producto;
-            }
-        }
-        foreach ($prodsCarretillaAutorizada as $producto) {
-            if (isset($productosCurados[$producto["productId"]])) {
-                $productosCurados[$producto["productId"]]["productStock"] -= $producto["reserved"];
-            }
-        }
-        foreach ($prodsCarretillaNAutorizada as $producto) {
-            if (isset($productosCurados[$producto["productId"]])) {
-                $productosCurados[$producto["productId"]]["productStock"] -= $producto["reserved"];
-            }
-        }
-        $productosDisponibles = null;
-        $prodsCarretillaAutorizada = null;
-        $prodsCarretillaNAutorizada = null;
-        return $productosCurados[$productId];
+
+        $reservadoTotal = ($reservadoAutorizado["reserved"] ?? 0) + ($reservadoNoAutorizado["reserved"] ?? 0);
+        $producto["productStock"] -= $reservadoTotal;
+
+        return $producto;
     }
 
+    public static function getProductosDestacados()
+    {
+        $sql = "SELECT
+                p.productId,
+                p.productName,
+                p.productDescription,
+                p.productDetails,
+                p.productPrice,
+                p.productStock,
+                p.productImgUrl,
+                p.productStatus,
+                b.brandName,
+                c.categoryName
+            FROM products p
+            INNER JOIN brands b ON p.productBrandId = b.brandId
+            INNER JOIN categories c ON p.productCategoryId = c.categoryId
+            INNER JOIN highlights h ON p.productId = h.productId
+            WHERE h.highlightStart <= NOW() AND h.highlightEnd >= NOW()
+            AND p.productStatus = 'ACT'";
+
+        return self::obtenerRegistros($sql, array());
+    }
 
     public static function addToAnonCart(
         int $productId,
@@ -103,30 +137,54 @@ class Cart extends \Dao\Table
     ) {
         $validateSql = "SELECT * from carretillaanon where anoncod = :anoncod and productId = :productId";
         $producto = self::obtenerUnRegistro($validateSql, ["anoncod" => $anonCod, "productId" => $productId]);
+
         if ($producto) {
             if ($producto["crrctd"] + $amount <= 0) {
-                $deleteSql = "DELETE from carretillaanon where usercod = :usercod and productId = :productId;";
+                $deleteSql = "DELETE from carretillaanon where anoncod = :anoncod and productId = :productId";
                 return self::executeNonQuery($deleteSql, ["anoncod" => $anonCod, "productId" => $productId]);
             } else {
-                $updateSql = "UPDATE carretillaanon set crrctd = crrctd + :amount where anoncod = :anoncod and productId = :productId";
-                return self::executeNonQuery($updateSql, ["anoncod" => $anonCod, "amount" => $amount, "productId" => $productId]);
+                $updateSql = "UPDATE carretillaanon set crrctd = crrctd + :amount, crrfching = NOW()
+                             where anoncod = :anoncod and productId = :productId";
+                return self::executeNonQuery($updateSql, [
+                    "anoncod" => $anonCod,
+                    "amount" => $amount,
+                    "productId" => $productId
+                ]);
             }
         } else {
             return self::executeNonQuery(
-                "INSERT INTO carretillaanon (anoncod, productId, crrctd, crrprc, crrfching) VALUES (:anoncod, :productId, :crrctd, :crrprc, NOW());",
-                ["anoncod" => $anonCod, "productId" => $productId, "crrctd" => $amount, "crrprc" => $price]
+                "INSERT INTO carretillaanon (anoncod, productId, crrctd, crrprc, crrfching)
+                VALUES (:anoncod, :productId, :crrctd, :crrprc, NOW())",
+                [
+                    "anoncod" => $anonCod,
+                    "productId" => $productId,
+                    "crrctd" => $amount,
+                    "crrprc" => $price
+                ]
             );
         }
     }
 
     public static function getAnonCart(string $anonCod)
     {
-        return self::obtenerRegistros("SELECT a.*, b.crrctd, b.crrprc, b.crrfching FROM products a inner join carretillaanon b on a.productId = b.productId where b.anoncod=:anoncod;", ["anoncod" => $anonCod]);
+        return self::obtenerRegistros(
+            "SELECT a.*, b.crrctd, b.crrprc, b.crrfching
+             FROM products a
+             INNER JOIN carretillaanon b ON a.productId = b.productId
+             WHERE b.anoncod = :anoncod",
+            ["anoncod" => $anonCod]
+        );
     }
 
     public static function getAuthCart(int $usercod)
     {
-        return self::obtenerRegistros("SELECT a.*, b.crrctd, b.crrprc, b.crrfching FROM products a inner join carretilla b on a.productId = b.productId where b.usercod=:usercod;", ["usercod" => $usercod]);
+        return self::obtenerRegistros(
+            "SELECT a.*, b.crrctd, b.crrprc, b.crrfching
+             FROM products a
+             INNER JOIN carretilla b ON a.productId = b.productId
+             WHERE b.usercod = :usercod",
+            ["usercod" => $usercod]
+        );
     }
 
     public static function addToAuthCart(
@@ -137,39 +195,83 @@ class Cart extends \Dao\Table
     ) {
         $validateSql = "SELECT * from carretilla where usercod = :usercod and productId = :productId";
         $producto = self::obtenerUnRegistro($validateSql, ["usercod" => $usercod, "productId" => $productId]);
+
         if ($producto) {
             if ($producto["crrctd"] + $amount <= 0) {
-                $deleteSql = "DELETE from carretilla where usercod = :usercod and productId = :productId;";
+                $deleteSql = "DELETE from carretilla where usercod = :usercod and productId = :productId";
                 return self::executeNonQuery($deleteSql, ["usercod" => $usercod, "productId" => $productId]);
             } else {
-                $updateSql = "UPDATE carretilla set crrctd = crrctd + :amount where usercod = :usercod and productId = :productId";
-                return self::executeNonQuery($updateSql, ["usercod" => $usercod, "amount" => $amount, "productId" => $productId]);
+                $updateSql = "UPDATE carretilla set crrctd = crrctd + :amount, crrfching = NOW()
+                              where usercod = :usercod and productId = :productId";
+                return self::executeNonQuery($updateSql, [
+                    "usercod" => $usercod,
+                    "amount" => $amount,
+                    "productId" => $productId
+                ]);
             }
         } else {
             return self::executeNonQuery(
-                "INSERT INTO carretilla (usercod, productId, crrctd, crrprc, crrfching) VALUES (:usercod, :productId, :crrctd, :crrprc, NOW());",
-                ["usercod" => $usercod, "productId" => $productId, "crrctd" => $amount, "crrprc" => $price]
+                "INSERT INTO carretilla (usercod, productId, crrctd, crrprc, crrfching)
+                VALUES (:usercod, :productId, :crrctd, :crrprc, NOW())",
+                [
+                    "usercod" => $usercod,
+                    "productId" => $productId,
+                    "crrctd" => $amount,
+                    "crrprc" => $price
+                ]
             );
         }
     }
 
-    public static function moveAnonToAuth(
-        string $anonCod,
-        int $usercod
-    ) {
-        $sqlstr = "INSERT INTO carretilla (userCod, productId, crrctd, crrprc, crrfching)
-        SELECT :usercod, productId, crrctd, crrprc, NOW() FROM carretillaanon where anoncod = :anoncod
-        ON DUPLICATE KEY UPDATE carretilla.crrctd = carretilla.crrctd + carretillaanon.crrctd;";
+    public static function moveAnonToAuth(string $anonCod, int $usercod)
+    {
+        $sqlstr = "INSERT INTO carretilla (usercod, productId, crrctd, crrprc, crrfching)
+            SELECT :usercod, productId, crrctd, crrprc, NOW()
+            FROM carretillaanon
+            WHERE anoncod = :anoncod
+            ON DUPLICATE KEY UPDATE carretilla.crrctd = carretilla.crrctd + carretillaanon.crrctd";
+        $deleteSql = "DELETE FROM carretillaanon WHERE anoncod = :anoncod";
 
-        $deleteSql = "DELETE FROM carretillaanon where anoncod = :anoncod;";
         self::executeNonQuery($sqlstr, ["anoncod" => $anonCod, "usercod" => $usercod]);
         self::executeNonQuery($deleteSql, ["anoncod" => $anonCod]);
     }
 
+    public static function clearAuthCart(int $usercod)
+    {
+        $deleteSql = "DELETE FROM carretilla WHERE usercod = :usercod";
+        return self::executeNonQuery($deleteSql, ["usercod" => $usercod]);
+    }
+
+    public static function clearAnonCart(string $anonCod)
+    {
+        $deleteSql = "DELETE FROM carretillaanon WHERE anoncod = :anoncod";
+        return self::executeNonQuery($deleteSql, ["anoncod" => $anonCod]);
+    }
+
+    public static function actualizarStock(int $productId, int $quantity): bool
+    {
+        $sql = "UPDATE products 
+                SET productStock = productStock - :quantity 
+                WHERE productId = :productId 
+                AND productStock >= :quantity";
+
+        return self::executeNonQuery($sql, [
+            'productId' => $productId,
+            'quantity' => $quantity
+        ]) > 0;
+    }
+
     public static function getProducto($productId)
     {
-        $sqlAllProductosActivos = "SELECT * from products where productId=:productId;";
-        $productosDisponibles = self::obtenerRegistros($sqlAllProductosActivos, array("productId" => $productId));
-        return $productosDisponibles;
+        $sql = "SELECT
+                p.*,
+                b.brandName,
+                c.categoryName
+            FROM products p
+            INNER JOIN brands b ON p.productBrandId = b.brandId
+            INNER JOIN categories c ON p.productCategoryId = c.categoryId
+            WHERE p.productId = :productId";
+
+        return self::obtenerUnRegistro($sql, array("productId" => $productId));
     }
 }
