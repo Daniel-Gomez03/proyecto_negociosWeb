@@ -26,6 +26,7 @@
         <thead>
             <tr>
                 <th>
+                Id
                     {{ifnot OrderByCategoryId}}
                         <a href="index.php?page=Maintenance_Catalog_Categories_Categories&orderBy=categoryId&orderDescending=0">Id <i class="fas fa-sort"></i></a>
                     {{endifnot OrderByCategoryId}}
@@ -37,6 +38,7 @@
                     {{endif OrderCategoryId}}
                 </th>
                 <th class="left">
+                Nombre
                     {{ifnot OrderByCategoryName}}
                         <a href="index.php?page=Maintenance_Catalog_Categories_Categories&orderBy=categoryName&orderDescending=0">Nombre <i class="fas fa-sort"></i></a>
                     {{endifnot OrderByCategoryName}}

@@ -1,5 +1,10 @@
 <?php
+
 namespace Controllers\Sec;
+
+use Dao\Cart\Cart;
+use Utilities\Cart\CartFns;
+
 class Login extends \Controllers\PublicController
 {
     private $txtEmail = "";
@@ -19,11 +24,13 @@ class Login extends \Controllers\PublicController
                 $this->errorEmail = "¡Correo no tiene el formato adecuado!";
                 $this->hasError = true;
             }
+
             if (\Utilities\Validators::IsEmpty($this->txtPswd)) {
                 $this->errorPswd = "¡Debe ingresar una contraseña!";
                 $this->hasError = true;
             }
-            if (! $this->hasError) {
+
+            if (!$this->hasError) {
                 if ($dbUser = \Dao\Security\Security::getUsuarioByEmail($this->txtEmail)) {
                     if ($dbUser["userest"] != \Dao\Security\Estados::ACTIVO) {
                         $this->generalError = "¡Credenciales son incorrectas!";
@@ -38,24 +45,28 @@ class Login extends \Controllers\PublicController
                         );
                     }
 
-
-
                     if (!\Dao\Security\Security::verifyPassword($this->txtPswd, $dbUser["userpswd"])) {
-    $this->generalError = "¡password!";
-    $this->hasError = true;
+                        $this->generalError = "¡Credenciales son incorrectas!";
+                        $this->hasError = true;
+                        error_log(
+                            sprintf(
+                                "ERROR: %d %s contraseña incorrecta",
+                                $dbUser["usercod"],
+                                $dbUser["useremail"]
+                            )
+                        );
+                    }
 
-
-    
-
-
-}
-
-                    if (! $this->hasError) {
+                    if (!$this->hasError) {
                         \Utilities\Security::login(
                             $dbUser["usercod"],
                             $dbUser["username"],
                             $dbUser["useremail"]
                         );
+                        
+                        $anonCod = CartFns::getAnnonCartCode();
+                        Cart::moveAnonToAuth($anonCod, $dbUser["usercod"]);
+                        
                         if (\Utilities\Context::getContextByKey("redirto") !== "") {
                             \Utilities\Site::redirectTo(
                                 \Utilities\Context::getContextByKey("redirto")
@@ -75,8 +86,10 @@ class Login extends \Controllers\PublicController
                 }
             }
         }
+
         $dataView = get_object_vars($this);
         \Views\Renderer::render("security/login", $dataView);
     }
 }
+
 ?>

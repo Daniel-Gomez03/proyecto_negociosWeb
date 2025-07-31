@@ -9,6 +9,11 @@
       "id": "Menu_SignUp",
       "nav_url": "index.php?page=Sec_Register",
       "nav_label":"<i class=\"fas fa-sign-in-alt\"></i>&nbsp;Crear Cuenta"
+    },
+    {
+      "id": "Menu_Catalog",
+      "nav_url": "index.php?page=Catalogo",
+      "nav_label": "<i class=\"fas fa-table\"></i>&nbsp;Catálogo"
     }
   ],
   "private": [
@@ -16,6 +21,16 @@
       "id":"Menu_PaymentCheckout",
       "nav_url": "index.php?page=Checkout_Checkout",
       "nav_label": "Carretilla de Compra"
+    },
+    {
+      "id": "Menu_Catalog",
+      "nav_url": "index.php?page=Checkout_Catalogo",
+      "nav_label": "<i class=\"fas fa-table\"></i>&nbsp;Catálogo"
+    },
+    {
+      "id": "Menu_OrdersHistory",
+      "nav_url": "index.php?page=Orders_History",
+      "nav_label": "<i class=\"fas fa-table\"></i>&nbsp;Historial de Pedidos"
     }
   ]
 }

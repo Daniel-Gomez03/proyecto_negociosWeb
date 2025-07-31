@@ -26,6 +26,7 @@
         <thead>
             <tr>
                 <th>
+                Id
                     {{ifnot OrderByBrandId}}
                         <a href="index.php?page=Maintenance_Catalog_Brands_Brands&orderBy=brandId&orderDescending=0">Id <i class="fas fa-sort"></i></a>
                     {{endifnot OrderByBrandId}}
@@ -37,6 +38,7 @@
                     {{endif OrderBrandId}}
                 </th>
                 <th class="left">
+                Nombre
                     {{ifnot OrderByBrandName}}
                         <a href="index.php?page=Maintenance_Catalog_Brands_Brands&orderBy=brandName&orderDescending=0">Nombre <i class="fas fa-sort"></i></a>
                     {{endifnot OrderByBrandName}}

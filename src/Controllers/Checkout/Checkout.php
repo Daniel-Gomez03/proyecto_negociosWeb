@@ -1,60 +1,60 @@
 <?php
-
 namespace Controllers\Checkout;
 
 use Controllers\PublicController;
 use Dao\Cart\Cart;
 use Utilities\Security;
+use Utilities\Site;
 
 class Checkout extends PublicController
 {
     public function run(): void
     {
-        /*
-        1) Mostrar el listado de productos a facturar y los detalles y totales de la proforma.
-        2) Al dar click en Pagar
-            2.1) Crear una orden de Paypal con los productos de la proforma.
-            2.2) Redirigir al usuario a la página de Paypal para que complete el pago.
-        
-        */
-        $viewData = array();
 
-        $carretilla = Cart::getAuthCart(Security::getUserId());
+        $viewData = array();
+        $usercod = Security::getUserId();
+        $carretilla = Cart::getAuthCart($usercod) ?? []; 
+
         if ($this->isPostBack()) {
             $processPayment = true;
+            
             if (isset($_POST["removeOne"]) || isset($_POST["addOne"])) {
                 $productId = intval($_POST["productId"]);
                 $productoDisp = Cart::getProductoDisponible($productId);
-                $amount = isset($_POST["removeOne"]) ? -1 : 1;
-                if ($amount == 1) {
-                    if ($productoDisp["productStock"] - $amount >= 0) {
+                
+                if ($productoDisp) {
+                    $amount = isset($_POST["removeOne"]) ? -1 : 1;
+                    
+                    if ($amount == 1 && $productoDisp["productStock"] - $amount >= 0) {
                         Cart::addToAuthCart(
                             $productId,
-                            Security::getUserId(),
+                            $usercod,
+                            $amount,
+                            $productoDisp["productPrice"]
+                        );
+                    } elseif ($amount == -1) {
+                        Cart::addToAuthCart(
+                            $productId,
+                            $usercod,
                             $amount,
                             $productoDisp["productPrice"]
                         );
                     }
-                } else {
-                    Cart::addToAuthCart(
-                        $productId,
-                        Security::getUserId(),
-                        $amount,
-                        $productoDisp["productPrice"]
-                    );
+                    
+                    $carretilla = Cart::getAuthCart($usercod) ?? [];
+                    $processPayment = false;
                 }
-                $carretilla = Cart::getAuthCart(Security::getUserId());
-                $processPayment = false;
             }
 
-            if ($processPayment) {
+            // Procesamiento de pago
+            if ($processPayment && !empty($carretilla)) {
                 $PayPalOrder = new \Utilities\Paypal\PayPalOrder(
                     "test" . (time() - 10000000),
-                    "http://localhost:64622/mvc202502/index.php?page=Checkout_Error",
-                    "http://localhost:64622/mvc202502/index.php?page=Checkout_Accept"
+                    "http://localhost:8080/proyecto_negociosWeb/index.php?page=Checkout_Error",
+                    "http://localhost:8080/proyecto_negociosWeb/index.php?page=Checkout_Accept"
                 );
 
-                foreach ($viewData["carretilla"] as $producto) {
+                foreach ($carretilla as $producto) {
                     $PayPalOrder->addItem(
                         $producto["productName"],
                         $producto["productDescription"],
@@ -70,31 +70,47 @@ class Checkout extends PublicController
                     \Utilities\Context::getContextByKey("PAYPAL_CLIENT_ID"),
                     \Utilities\Context::getContextByKey("PAYPAL_CLIENT_SECRET")
                 );
-                $PayPalRestApi->getAccessToken();
-                $response = $PayPalRestApi->createOrder($PayPalOrder);
-
-                $_SESSION["orderid"] = $response->id;
-                foreach ($response->links as $link) {
-                    if ($link->rel == "approve") {
-                        \Utilities\Site::redirectTo($link->href);
+                
+                $response = $PayPalRestApi->getAccessToken();
+                if ($response) {
+                    $response = $PayPalRestApi->createOrder($PayPalOrder);
+                    
+                    if ($response && isset($response->id)) {
+                        $_SESSION["orderid"] = $response->id;
+                        
+                        if (isset($response->links)) {
+                            foreach ($response->links as $link) {
+                                if ($link->rel == "approve") {
+                                    Site::redirectTo($link->href);
+                                    return;
+                                }
+                            }
+                        }
                     }
                 }
-                die();
+                
+                Site::redirectTo("index.php?page=Checkout_Error");
+                return;
             }
         }
+
+        // Preparar datos para la vista
         $finalCarretilla = [];
-        $counter = 1;
         $total = 0;
-        foreach ($carretilla as $prod) {
-            $prod["row"] = $counter;
-            $prod["subtotal"] = number_format($prod["crrprc"] * $prod["crrctd"], 2);
-            $total += $prod["crrprc"] * $prod["crrctd"];
+        
+        foreach ($carretilla as $index => $prod) {
+            $prod["row"] = $index + 1;
+            $subtotal = $prod["crrprc"] * $prod["crrctd"];
+            $prod["subtotal"] = number_format($subtotal, 2);
+            $total += $subtotal;
             $prod["crrprc"] = number_format($prod["crrprc"], 2);
             $finalCarretilla[] = $prod;
-            $counter++;
         }
+
         $viewData["carretilla"] = $finalCarretilla;
         $viewData["total"] = number_format($total, 2);
+        $viewData["hasItems"] = !empty($finalCarretilla);
+        
         \Views\Renderer::render("paypal/checkout", $viewData);
     }
 }

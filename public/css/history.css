@@ -1,0 +1,146 @@
+/* =================================================================== */
+/*             ESTILOS PARA EL HISTORIAL DE ÓRDENES                  */
+/* =================================================================== */
+
+/* Contenedor principal de la sección */
+.orders-history-container {
+    padding: var(--spacing-lg);
+    background-color: var(--color-white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+}
+
+/* Título de la sección */
+.orders-history-container h2 {
+    font-family: var(--font-primary);
+    font-size: 2.5rem;
+    text-align: center;
+    color: var(--color-text-dark);
+    margin-bottom: var(--spacing-xl);
+    position: relative;
+    padding-bottom: var(--spacing-md);
+}
+
+/* Línea decorativa bajo el título */
+.orders-history-container h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+    border-radius: 2px;
+}
+
+/* Ocultamos el <hr> original, ya que lo reemplazamos con el ::after */
+.orders-history-container hr {
+    display: none;
+}
+
+/* Contenedor de la tabla para scrolling en móviles */
+.table-responsive {
+    overflow-x: auto;
+    width: 100%;
+}
+
+/* Tabla principal del historial */
+.orders-history-table {
+    width: 100%;
+    min-width: 600px; /* Asegura que la tabla no se comprima demasiado en móviles */
+    border-collapse: collapse;
+    font-family: var(--font-secondary);
+}
+
+/* Encabezado de la tabla */
+.orders-history-table thead {
+    background-color: var(--color-secondary);
+    color: var(--color-white);
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.orders-history-table th {
+    padding: var(--spacing-md);
+    font-weight: 700;
+    text-align: left;
+}
+
+/* Cuerpo de la tabla */
+.orders-history-table td {
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+}
+
+.orders-history-table tbody tr:nth-child(even) {
+    background-color: var(--color-bg-light);
+}
+
+.orders-history-table tbody tr:hover {
+    background-color: #e9f0fc;
+    transition: background-color 0.2s ease-in-out;
+}
+
+/* Estilo para la columna de acciones */
+.orders-history-table td:last-child {
+    text-align: center;
+}
+
+/* Botón "Ver Detalles" */
+.btn-view-details {
+    display: inline-block;
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: 0.5rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(37, 99, 235, 0.2);
+}
+
+.btn-view-details:hover {
+    background-color: var(--color-primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+}
+
+.alert-no-orders {
+    background-color: #f0f4ff; 
+    border-left: 5px solid var(--color-primary);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-xl);
+    text-align: center;
+}
+
+.alert-no-orders h4 {
+    font-family: var(--font-primary);
+    font-size: 1.5rem;
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.alert-no-orders p {
+    color: var(--color-text-light);
+    margin-bottom: var(--spacing-lg);
+}
+
+.alert-no-orders .btn-go-to-catalog {
+    display: inline-block;
+    background-color: var(--color-success);
+    color: var(--color-white);
+    padding: var(--spacing-md) var(--spacing-xl);
+    border-radius: 0.5rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.alert-no-orders .btn-go-to-catalog:hover {
+    background-color: #059669; 
+    transform: translateY(-2px);
+}
