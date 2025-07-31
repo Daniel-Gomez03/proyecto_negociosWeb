@@ -150,6 +150,22 @@
             return self::executeNonQuery($sqlstr, ["usercod" => $usercod]);
         }
 
+<<<<<<< HEAD
+=======
+        public static function updateRole(string $oldCod, string $newCod, string $rolesdsc, string $rolesest) {
+    $sqlstr = "UPDATE roles 
+               SET rolescod = :newCod, rolesdsc = :rolesdsc, rolesest = :rolesest
+               WHERE rolescod = :oldCod;";
+    $params = [
+        "newCod" => $newCod,
+        "rolesdsc" => $rolesdsc,
+        "rolesest" => $rolesest,
+        "oldCod" => $oldCod
+    ];
+    return self::executeNonQuery($sqlstr, $params);
+}
+
+>>>>>>> 797238068fa51e7e6566ccf01f64f12e06e6ff5f
 
 
     }

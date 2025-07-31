@@ -87,60 +87,6 @@
             return true;
         }
 
-        private function handlePostAction() {
-            switch ($this->mode) {
-                case "INS":
-                    $this->handleInsert();
-                    break;
-                case "UPD":
-                    $this->handleUpdate();
-                    break;
-                case "DEL":
-                    $this->handleDelete();
-                    break;
-                default:
-                    throw new \Exception("Modo inválido", 1);
-            }
-        }
-
-        private function handleInsert() {
-            $result = RolesDao::insertRole(
-                $this->role["rolescod"],
-                $this->role["rolesdsc"],
-                $this->role["rolesest"]
-            );
-            if ($result > 0) {
-                Site::redirectToWithMsg(
-                    "index.php?page=Maintenance_Roles_Roles",
-                    "Rol creado exitosamente"
-                );
-            }
-        }
-
-        private function handleUpdate() {
-            $result = RolesDao::updateRole(
-                $this->role["rolescod"],
-                $this->role["rolesdsc"],
-                $this->role["rolesest"]
-            );
-            if ($result > 0) {
-                Site::redirectToWithMsg(
-                    "index.php?page=Maintenance_Roles_Roles",
-                    "Rol actualizado exitosamente"
-                );
-            }
-        }
-
-        private function handleDelete() {
-            $result = RolesDao::deleteRole($this->role["rolescod"]);
-            if ($result > 0) {
-                Site::redirectToWithMsg(
-                    "index.php?page=Maintenance_Roles_Roles",
-                    "Rol eliminado exitosamente"
-                );
-            }
-        }
-
         private function setViewData(): void {
             $this->viewData["mode"] = $this->mode;
             $this->viewData["role_xss_token"] = $this->role_xss_token;
@@ -157,4 +103,75 @@
 
             $this->viewData["role"] = $this->role;
         }
+
+private function loadRoleFromPost() {
+    $this->role = [
+        "old_rolescod" => $_POST["old_rolescod"] ?? null,
+        "rolescod"    => $_POST["rolescod"] ?? null,
+        "rolesdsc"    => $_POST["rolesdsc"] ?? null,
+        "rolesest"    => $_POST["rolesest"] ?? null,
+        // si tienes más campos, agrégalos aquí
+    ];
+}
+
+
+       private function handlePostAction(){
+         $this->loadRoleFromPost(); 
+            switch($this->mode){
+                case "INS":
+                    $result = RolesDao::insertRole(
+                    $this->role["rolescod"],
+                    $this->role["rolesdsc"],
+                    $this->role["rolesest"]
+                    );
+                    if (!$result) {
+                        throw new \Exception("Error al insertar el rol", 1);
+                    }
+                    else{
+                        Site::redirectToWithMsg("index.php?page=Maintenance_Roles_Roles", "Rol creado exitosamente");
+                    }
+                    
+                    break;
+                case "UPD":
+                    if (empty($this->role["old_rolescod"])) {
+                throw new \Exception("El código original del rol es requerido para actualizar.", 1);
+            }
+                    $result = RolesDao::updateRole(
+    $this->role["old_rolescod"],
+    $this->role["rolescod"],
+    $this->role["rolesdsc"],
+    $this->role["rolesest"]
+);
+
+if (!$result) {
+    throw new \Exception("Error al actualizar el rol", 1);
+} else {
+    Site::redirectToWithMsg("index.php?page=Maintenance_Roles_Roles", "Rol actualizado exitosamente");
+}
+
+                    
+                    break;
+                case "DEL":
+                   if (empty($this->role["old_rolescod"])) {
+        throw new \Exception("El código original del rol es requerido para eliminar.", 1);
+    }
+
+    $result = RolesDao::deleteRole($this->role["old_rolescod"]);
+    
+    if ($result > 0) {
+        Site::redirectToWithMsg(
+            "index.php?page=Maintenance_Roles_Roles",
+            "Rol eliminado exitosamente"
+        );
+    } else {
+        throw new \Exception("No se pudo eliminar el rol.", 1);
+    }
+                    
+                    break;
+                default:
+                    throw new \Exception("Modo inválido", 1);
+            }
+        }
+
+       
     }

@@ -87,59 +87,6 @@ class Funcion extends PublicController {
         return true;
     }
 
-    private function handlePostAction() {
-        switch ($this->mode) {
-            case "INS":
-                $this->handleInsert();
-                break;
-            case "UPD":
-                $this->handleUpdate();
-                break;
-            case "DEL":
-                $this->handleDelete();
-                break;
-            default:
-                throw new \Exception("Modo inválido", 1);
-        }
-    }
-
-    private function handleInsert() {
-        $result = FuncionesDao::insertFuncion(
-            $this->funcion["funcod"],
-            $this->funcion["funcdsc"],
-            $this->funcion["funcest"]
-        );
-        if ($result > 0) {
-            Site::redirectToWithMsg(
-                "index.php?page=Maintenance_Funciones_Funciones",
-                "Función creada exitosamente"
-            );
-        }
-    }
-
-    private function handleUpdate() {
-        $result = FuncionesDao::updateFuncion(
-            $this->funcion["funcod"],
-            $this->funcion["funcdsc"],
-            $this->funcion["funcest"]
-        );
-        if ($result > 0) {
-            Site::redirectToWithMsg(
-                "index.php?page=Maintenance_Funciones_Funciones",
-                "Función actualizada exitosamente"
-            );
-        }
-    }
-
-    private function handleDelete() {
-        $result = FuncionesDao::deleteFuncion($this->funcion["funcod"]);
-        if ($result > 0) {
-            Site::redirectToWithMsg(
-                "index.php?page=Maintenance_Funciones_Funciones",
-                "Función eliminada exitosamente"
-            );
-        }
-    }
 
     private function setViewData(): void {
         $this->viewData["mode"] = $this->mode;
@@ -157,4 +104,58 @@ class Funcion extends PublicController {
 
         $this->viewData["funcion"] = $this->funcion;
     }
+
+
+
+
+    private function handlePostAction(){
+            switch($this->mode){
+                case "INS":
+                  $result = FuncionesDao::insertFuncion(
+            $this->funcion["funcod"],
+            $this->funcion["funcdsc"],
+            $this->funcion["funcest"],
+
+        );
+                    if (!$result) {
+                        throw new \Exception("Error al insertar la funcion", 1);
+                    }
+                    else{
+                        
+                        Site::redirectToWithMsg( "index.php?page=Maintenance_Funciones_Funciones",
+                "Función creada exitosamente");
+                    }
+                    
+                    break;
+                case "UPD":
+                    $result = FuncionesDao::updateFuncion(
+            $this->funcion["funcod"],
+            $this->funcion["funcdsc"],
+            $this->funcion["funcest"]
+        );
+        if (!$result) {
+                        throw new \Exception("Error al actualizar la funcion", 1);
+                    }
+                    else{
+                        Site::redirectToWithMsg( "index.php?page=Maintenance_Funciones_Funciones",
+                "Función creada exitosamente");
+                    }
+                    
+                    
+                    break;
+                case "DEL":
+                     $result = FuncionesDao::deleteFuncion($this->funcion["funcod"]);
+        if ($result > 0) {
+            Site::redirectToWithMsg(
+                "index.php?page=Maintenance_Funciones_Funciones",
+                "Función eliminada exitosamente"
+            );
+            }
+                    
+                    break;
+                default:
+                    throw new \Exception("Modo inválido", 1);
+            }
+        }
+    
 }
