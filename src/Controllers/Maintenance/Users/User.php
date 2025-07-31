@@ -138,23 +138,6 @@
             $this->viewData["user"] = $this->user;
         }
 
-/*
-        private function handlePostAction() {
-            switch ($this->mode) {
-                case "INS":
-                    $this->handleInsert();
-                    break;
-                case "UPD":
-                    $this->handleUpdate();
-                    break;
-                case "DEL":
-                    $this->handleDelete();
-                    break;
-                default:
-                    throw new \Exception("Modo inválido", 1);
-            }
-        }*/
-
 
         private function handlePostAction(){
             switch($this->mode){
@@ -185,11 +168,10 @@
                     
                     break;
                 case "UPD":
-                    if (!empty($this->user["userpswd"])) {
-                        $this->user["userpswd"] = password_hash($this->user["userpswd"], PASSWORD_BCRYPT);
-                    } else {
-                        $this->user["userpswd"] = null; // No actualizar la contraseña si está vacía
+                    if (empty($this->user["userpswd"])) {
+                    throw new \Exception("Debe ingresar una nueva contraseña.");
                     }
+                    $this->user["userpswd"] = password_hash($this->user["userpswd"], PASSWORD_BCRYPT);
                     $result = UsersDao::updateUser(
                         $this->user["usercod"],
                         $this->user["useremail"],

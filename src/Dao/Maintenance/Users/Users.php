@@ -84,7 +84,7 @@
     string $userpswdexp,
     string $userpswdest,
     string $useractcod,
-    $userpswdchg = null // puede ser null o string (datetime si se usa)
+    $userpswdchg = null 
 ) {
     $sqlstr = "INSERT INTO usuario 
         (useremail, username, userpswd, userfching, userpswdexp, userpswdest, useractcod, userpswdchg, userest, usertipo) 
