@@ -184,11 +184,11 @@
 
 
         private function handleDelete() {
-            $result = UserDao::deleteUser($this->user["usercod"]);
+            $result = UsersDao::deleteUser($this->user["usercod"]);
             if ($result > 0) {
                 Site::redirectToWithMsg(
                     "index.php?page=Maintenance_Users_Users",
-                    "User eliminado exitosamente"
+                    "Usuario eliminado exitosamente"
                 );
             }
         }
