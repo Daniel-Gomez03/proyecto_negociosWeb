@@ -6,6 +6,8 @@
   {{with user}}
   <form action="index.php?page=Maintenance_Users_User&mode={{~mode}}&id={{usercod}}" method="POST"
     class="col-12 col-m-8 offset-m-2">
+
+
     <div class="row my-2 align-center">
       <label class="col-12 col-m-3" for="usercodD">Código</label>
       <input class="col-12 col-m-9" readonly disabled type="text" name="usercodD" id="usercodD" value="{{usercod}}" />
@@ -47,15 +49,23 @@
       {{endif userpswd_error}}
     </div>
 
+
+
+
     <div class="row my-2 align-center">
       <label class="col-12 col-m-3" for="usertipo">Tipo</label>
       <input class="col-12 col-m-9" {{~readonly}} type="text" name="usertipo" id="usertipo" placeholder="Tipo"
         value="{{usertipo}}" />
+      {{if usertipo_error}}
+      <div class="col-12 col-m-9 offset-m-3 error">
+        {{usertipo_error}}
+      </div>
+      {{endif usertipo_error}}
     </div>
 
     <div class="row my-2 align-center">
       <label class="col-12 col-m-3" for="userest">Estado</label>
-      <select name="userest" id="userest" class="col-12 col-m-9" {{if ~readonly}} readonly disabled {{endif ~readonly}}>
+      <select name="userest" id="userest" class="col-12 col-m-9" {{if ~readonly}}  {{endif ~readonly}}>
         <option value="ACT" {{userest_act}}>Activo</option>
         <option value="INA" {{userest_ina}}>Inactivo</option>
       </select>
