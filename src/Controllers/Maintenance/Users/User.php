@@ -22,19 +22,23 @@
         ];
         private $readonly = "";
         private $showCommitBtn = true;
+
+
         private $user = [
             "usercod" => 0,
             "useremail" => "",
             "username" => "",
             "userpswd" => "",
             "userfching" => "",
-            "userpswdest" => "ACT",
+            "userpswdest" => "",
             "userpswdexp" => "",
             "userest" => "ACT",
             "useractcod" => "",
             "userpswdchg" => "",
-            "usertipo" => ""
+            "usertipo" => "PBL"
         ];
+
+        
         private $user_xss_token = "";
 
         public function run(): void {
@@ -115,84 +119,7 @@
             return true;
         }
 
-        private function handlePostAction() {
-            switch ($this->mode) {
-                case "INS":
-                    $this->handleInsert();
-                    break;
-                case "UPD":
-                    $this->handleUpdate();
-                    break;
-                case "DEL":
-                    $this->handleDelete();
-                    break;
-                default:
-                    throw new \Exception("Modo inválido", 1);
-            }
-        }
-
-        private function handleInsert() {
-
-    $this->user["userpswd"] = password_hash($this->user["userpswd"], PASSWORD_BCRYPT);
-
-    $result = UsersDao::insertUser(
-        $this->user["useremail"],
-        $this->user["username"],
-        $this->user["userpswd"],
-        $this->user["userpswdest"],
-        $this->user["userest"],
-        $this->user["usertipo"]
-    );
-            if ($result > 0) {
-                Site::redirectToWithMsg(
-                    "index.php?page=Maintenance_Users_Users",
-                    "Usuario creado exitosamente"
-                );
-            }
-        }
-
-    private function handleUpdate() 
-    {
-   
-
-    if (!empty($this->user["userpswd"])){
-       $this->user["userpswd"]=password_hash($this->user["userpswd"], PASSWORD_BCRYPT);
-    } else {
-        $currentUser = UsersDao::getUserById($this->user["usercod"]);
-        $this->user["userpswd"] = $currentUser["userpswd"]; // Se conserva la actual
-    }
-
-    
-    // Actualizar el usuario
-
-        $result = UsersDao::updateUser(
-        $this->user["usercod"],
-        $this->user["useremail"],
-        $this->user["username"],
-        $this->user["userpswd"],        
-        $this->user["userest"],
-        $this->user["usertipo"]
-    );
-
-    if ($result > 0) {
-        Site::redirectToWithMsg(
-            "index.php?page=Maintenance_Users_Users",
-            "Usuario actualizado exitosamente"
-        );
-    }
-}
-
-
-        private function handleDelete() {
-            $result = UsersDao::deleteUser($this->user["usercod"]);
-            if ($result > 0) {
-                Site::redirectToWithMsg(
-                    "index.php?page=Maintenance_Users_Users",
-                    "Usuario eliminado exitosamente"
-                );
-            }
-        }
-
+        
 
         private function setViewData(): void {
             $this->viewData["mode"] = $this->mode;
@@ -210,4 +137,90 @@
 
             $this->viewData["user"] = $this->user;
         }
+
+/*
+        private function handlePostAction() {
+            switch ($this->mode) {
+                case "INS":
+                    $this->handleInsert();
+                    break;
+                case "UPD":
+                    $this->handleUpdate();
+                    break;
+                case "DEL":
+                    $this->handleDelete();
+                    break;
+                default:
+                    throw new \Exception("Modo inválido", 1);
+            }
+        }*/
+
+
+        private function handlePostAction(){
+            switch($this->mode){
+                case "INS":
+                    $this->user["userpswd"] = password_hash($this->user["userpswd"], PASSWORD_BCRYPT);
+                    $this->user["userpswdexp"] = date('Y-m-d', time() + 7776000); 
+                    $this->user["useractcod"] = hash("sha256", $this->user["useremail"] . time()); 
+                    $this->user["userpswdchg"] = date('Y-m-d H:i:s'); 
+                    $this->user["userpswdest"] = "ACT"; 
+                    $result = UsersDao::insertUser(
+                        $this->user["useremail"],
+                        $this->user["username"],
+                        $this->user["userpswd"],
+                        $this->user["userest"],
+                        $this->user["usertipo"],
+                        $this->user["userpswdexp"],
+                        $this->user["userpswdest"],
+                        $this->user["useractcod"],
+                        $this->user["userpswdchg"]
+
+                    );
+                    if (!$result) {
+                        throw new \Exception("Error al insertar el usuario", 1);
+                    }
+                    else{
+                        Site::redirectToWithMsg("index.php?page=Maintenance_Users_Users", "Usuario creado exitosamente");
+                    }
+                    
+                    break;
+                case "UPD":
+                    if (!empty($this->user["userpswd"])) {
+                        $this->user["userpswd"] = password_hash($this->user["userpswd"], PASSWORD_BCRYPT);
+                    } else {
+                        $this->user["userpswd"] = null; // No actualizar la contraseña si está vacía
+                    }
+                    $result = UsersDao::updateUser(
+                        $this->user["usercod"],
+                        $this->user["useremail"],
+                        $this->user["username"],
+                        $this->user["userpswd"],
+                        $this->user["userest"],
+                        $this->user["usertipo"]
+                    );
+                    if (!$result) {
+                        throw new \Exception("Error al actualizar el usuario", 1);
+                    } else {
+                        Site::redirectToWithMsg("index.php?page=Maintenance_Users_Users", "Usuario actualizado exitosamente");
+                    }
+                    
+                    break;
+                case "DEL":
+                    $result = UsersDao::deleteUser($this->user["usercod"]);
+            if ($result > 0) {
+                Site::redirectToWithMsg(
+                    "index.php?page=Maintenance_Users_Users",
+                    "User eliminado exitosamente"
+                );
+            }
+                    
+                    break;
+                default:
+                    throw new \Exception("Modo inválido", 1);
+            }
+        }
+
+
+
+
     }

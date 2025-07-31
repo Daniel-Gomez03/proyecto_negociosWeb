@@ -105,27 +105,37 @@
 
         // Insertar un nuevo usuario
         public static function insertUser(
-            string $useremail,
-            string $username,
-            string $userpswd,
-            string $userest,
-            string $usertipo
-        ) {
-            $sqlstr = "INSERT INTO usuario 
-                        (useremail, username, userpswd, userfching, userest, usertipo) 
-                    VALUES 
-                        (:useremail, :username, :userpswd, NOW(), :userest, :usertipo)";
+    string $useremail,
+    string $username,
+    string $userpswd,
+    string $userest,
+    string $usertipo,
+    string $userpswdexp,
+    string $userpswdest,
+    string $useractcod,
+    $userpswdchg = null // puede ser null o string (datetime si se usa)
+) {
+    $sqlstr = "INSERT INTO usuario 
+        (useremail, username, userpswd, userfching, userpswdexp, userpswdest, useractcod, userpswdchg, userest, usertipo) 
+        VALUES 
+        (:useremail, :username, :userpswd, NOW(), :userpswdexp, :userpswdest, :useractcod, :userpswdchg, :userest, :usertipo)";
+    
+    $params = [
+        "useremail"     => $useremail,
+        "username"      => $username,
+        "userpswd"      => password_hash($userpswd, PASSWORD_BCRYPT),
+        "userpswdexp"   => $userpswdexp,
+        "userpswdest"   => $userpswdest,
+        "useractcod"    => $useractcod,
+        "userpswdchg"   => $userpswdchg,
+        "userest"       => $userest,
+        "usertipo"      => $usertipo
+    ];
 
-            $params = [
-                "useremail" => $useremail,
-                "username" => $username,
-                "userpswd" => $userpswd,
-                "userest" => $userest,
-                "usertipo" => $usertipo
-            ];
+    return self::executeNonQuery($sqlstr, $params);
+}
 
-            return self::executeNonQuery($sqlstr, $params);
-        }
+
 
         // Actualizar usuario
         public static function updateUser(
