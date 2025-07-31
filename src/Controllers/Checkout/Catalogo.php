@@ -1,56 +1,61 @@
 <?php
-/**
- * PHP Version 7.2
- * Checkout
- *
- * @category Controller
- * @package  Controllers\Checkout
- * @author   Orlando J Betancourth <orlando.betancourth@gmail.com>
- * @license  Comercial http://
- * @version  CVS:1.0.0
- * @link     http://url.com
- */
- namespace Controllers\Checkout;
+namespace Controllers\Checkout;
 
-// ---------------------------------------------------------------
-// Sección de imports
-// ---------------------------------------------------------------
-use Controllers\PrivateController;
+use Controllers\PublicController;
+use Utilities\Site;
+use Dao\Cart\Cart;
+use Utilities\Security;
 
-/**
- * Catalogo
- *
- * @category Public
- * @package  Controllers\Checkout;
- * @author   Orlando J Betancourth <orlando.betancourth@gmail.com>
- * @license  MIT http://
- * @link     http://
- */
-class Catalogo extends PrivateController
+class Catalogo extends PublicController
 {
-    /**
-     * Runs the controller
-     *
-     * @return void
-     */
-    public function run():void
+    public function run(): void
     {
-        // code
-        $producto = \Dao\Productos::getAll();
-        $carretilla = \Dao\Carretilla::getAll(\Utilities\Security::getUserId());
+        Site::addLink("public/css/catalogo.css");
 
-        $carrAssoc = array();
-        foreach($carretilla as $carr) {
-            $carrAssoc[$carr["prdcod"]] = $carr;
+        if ($this->isPostBack()) {
+            $this->handleCartActions();
         }
 
-        foreach($producto as $prod) {
-            if (isset($carrAssoc[$prod["prdcod"]])) {
-                $prod["enCarretilla"] = true;
-            } else {
-                $prod["enCarretilla"] = false;
-            }
+        $productosDisponibles = Cart::getProductosDisponibles();
+        $carretillaUsuario = Cart::getAuthCart(Security::getUserId());
+
+        $carretillaAssoc = array();
+        foreach ($carretillaUsuario as $item) {
+            $carretillaAssoc[$item["productId"]] = $item;
         }
-        \Views\Renderer::render("abc", array("productos" => $producto));
+
+        $viewDataProductos = array_map(function ($producto) use ($carretillaAssoc) {
+            $producto['enCarretilla'] = isset($carretillaAssoc[$producto['productId']]);
+            return $producto;
+        }, $productosDisponibles);
+
+        $viewData = [
+            "page_title" => "Catálogo de Productos",
+            "products" => $viewDataProductos,
+            "formAction" => "index.php?page=Checkout_Catalogo"
+        ];
+
+        \Views\Renderer::render("catalog", $viewData);
+    }
+
+    private function handleCartActions(): void
+    {
+        if (!isset($_POST["productId"])) {
+            return;
+        }
+
+        $productId = intval($_POST["productId"]);
+        $producto = Cart::getProductoDisponible($productId);
+
+        if (!$producto || $producto["productStock"] <= 0) {
+            return;
+        }
+
+        $precio = $producto["productPrice"];
+        $usercod = Security::getUserId();
+
+        Cart::addToAuthCart($productId, $usercod, 1, $precio);
+
+        Site::redirectTo("index.php?page=Checkout_Catalogo");
     }
 }

@@ -1,0 +1,240 @@
+/* Checkout Styles - Versión Limpia */
+
+/* Container principal del checkout */
+.container-l {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    background: #f8fafc;
+    min-height: 100vh;
+    padding-top: 120px;
+}
+
+/* Sección de título */
+.depth-4 {
+    background: #ffffff;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    margin-bottom: 2rem;
+    border: 1px solid #e2e8f0;
+}
+
+.depth-4 h1 {
+    margin: 0;
+    color: #1f2937;
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+/* Grid del checkout */
+.grid {
+    background: #ffffff;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e2e8f0;
+}
+
+/* Filas del grid */
+.row {
+    display: flex;
+    align-items: center;
+    transition: background-color 0.2s ease;
+}
+
+.row:hover:not(:first-child):not(:nth-last-child(2)):not(:last-child) {
+    background: #f8fafc;
+}
+
+/* Encabezado de la tabla */
+.row:first-child {
+    background: #2563eb;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+/* Bordes entre filas */
+.border-b {
+    border-bottom: 1px solid #e2e8f0;
+}
+
+/* Columnas */
+.col-1 { flex: 0 0 8.33%; }
+.col-2 { flex: 0 0 16.66%; }
+.col-3 { flex: 0 0 25%; }
+.col-4 { flex: 0 0 33.33%; }
+.col-12 { flex: 0 0 100%; }
+
+.offset-7 { margin-left: 58.33%; }
+
+/* Alineación de texto */
+.right { 
+    text-align: right; 
+    justify-content: flex-end; 
+}
+.center { 
+    text-align: center; 
+    justify-content: center; 
+}
+
+/* Estilo de los spans en las filas */
+.row span {
+    padding: 0.75rem;
+    color: #1f2937;
+    font-size: 0.95rem;
+}
+
+/* Fila del total */
+.row:nth-last-child(2) {
+    background: #f8fafc;
+    border-top: 2px solid #2563eb;
+    font-weight: 700;
+}
+
+.row:nth-last-child(2) span {
+    font-size: 1.1rem;
+    color: #1f2937;
+}
+
+/* Formularios en las celdas */
+.row form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 0;
+}
+
+/* Botones circulares para cantidad */
+.circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid #2563eb;
+    background: #ffffff;
+    color: #2563eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+}
+
+.circle:hover {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+/* Span de cantidad */
+.row form span {
+    font-weight: 600;
+    color: #1f2937;
+    min-width: 40px;
+    text-align: center;
+    background: #f8fafc;
+    border-radius: 0.5rem;
+    padding: 0.4rem 0.8rem !important;
+    border: 1px solid #e2e8f0;
+}
+
+/* Botón principal de "Place Order" */
+.row:last-child {
+    padding: 2rem;
+    background: #f8fafc;
+}
+
+.row:last-child form {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.row button[type="submit"]:not(.circle) {
+    background: #10b981;
+    color: #ffffff;
+    border: none;
+    padding: 1rem 3rem;
+    border-radius: 0.75rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.row button[type="submit"]:not(.circle):hover {
+    background: #059669;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+}
+
+/* Inputs hidden */
+input[type="hidden"] {
+    display: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container-l {
+        padding: 1rem 0.5rem;
+        padding-top: 100px;
+    }
+    
+    .depth-4 {
+        padding: 1.5rem;
+    }
+    
+    .depth-4 h1 {
+        font-size: 2rem;
+    }
+    
+    .row {
+        flex-wrap: wrap;
+        padding: 0.75rem !important;
+    }
+    
+    .col-1, .col-2, .col-3, .col-4 {
+        flex: 0 0 100%;
+        margin-bottom: 0.5rem;
+        text-align: center !important;
+        justify-content: center !important;
+    }
+    
+    .offset-7 {
+        margin-left: 0;
+    }
+    
+    .row:first-child {
+        display: none;
+    }
+    
+    .row span::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #6b7280;
+        display: block;
+        font-size: 0.8rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .row button[type="submit"]:not(.circle) {
+        width: 100%;
+        max-width: 280px;
+    }
+}
+
+@media (max-width: 480px) {
+    .depth-4 h1 {
+        font-size: 1.75rem;
+    }
+    
+    .circle {
+        width: 28px;
+        height: 28px;
+        font-size: 0.75rem;
+    }
+}

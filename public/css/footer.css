@@ -1,0 +1,326 @@
+/* FOOTER */
+
+/* Footer Styles */
+
+/* Footer principal */
+.main-footer {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    color: #ffffff;
+    padding: 0;
+    margin-top: auto;
+    position: relative;
+    z-index: 1010;
+    overflow: hidden;
+}
+
+/* Efecto de fondo sutil */
+.main-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="1" fill="rgba(255,255,255,0.03)"/><circle cx="60" cy="40" r="1.5" fill="rgba(255,255,255,0.02)"/><circle cx="40" cy="70" r="1" fill="rgba(255,255,255,0.03)"/><circle cx="80" cy="80" r="1.2" fill="rgba(255,255,255,0.02)"/></svg>') repeat;
+    pointer-events: none;
+}
+
+/* Contenido principal del footer */
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 2rem 2rem;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 3rem;
+    position: relative;
+    z-index: 2;
+}
+
+/* Secciones del footer */
+.footer-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.footer-section h4 {
+    margin: 0 0 1.5rem 0;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #ffffff;
+    position: relative;
+    padding-bottom: 0.75rem;
+}
+
+/* Línea decorativa bajo los títulos */
+.footer-section h4::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background: linear-gradient(90deg, #2563eb, #f59e0b);
+    border-radius: 2px;
+}
+
+.footer-section p {
+    margin: 0.5rem 0;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: color 0.3s ease;
+}
+
+.footer-section p:hover {
+    color: #ffffff;
+}
+
+.footer-section p i {
+    width: 18px;
+    color: #f59e0b;
+    font-size: 0.9rem;
+}
+
+/* Primera sección - información de la empresa */
+.footer-section:first-child p:first-of-type {
+    font-size: 1.05rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+}
+
+.footer-section:first-child p:last-of-type {
+    color: #f59e0b;
+    font-weight: 600;
+    margin-top: 0.5rem;
+}
+
+/* Enlaces sociales */
+.social-links {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.social-links a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.social-links a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #2563eb, #f59e0b);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.social-links a:hover {
+    transform: translateY(-3px);
+    border-color: transparent;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.social-links a:hover::before {
+    opacity: 1;
+}
+
+/* Colores específicos para redes sociales */
+.social-links a[href*="facebook"]:hover {
+    box-shadow: 0 8px 20px rgba(24, 119, 242, 0.4);
+}
+
+.social-links a[href*="facebook"]::before {
+    background: #1877f2;
+}
+
+.social-links a[href*="instagram"]:hover {
+    box-shadow: 0 8px 20px rgba(225, 48, 108, 0.4);
+}
+
+.social-links a[href*="instagram"]::before {
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+}
+
+/* Footer inferior */
+.footer-bottom {
+    background: rgba(0, 0, 0, 0.3);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1.5rem 2rem;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+.footer-bottom p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    font-weight: 400;
+}
+
+/* Efecto de animación de entrada */
+.main-footer {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        padding: 2rem 1rem 1.5rem;
+        text-align: center;
+    }
+    
+    .footer-section h4::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .footer-section p {
+        justify-content: center;
+        font-size: 0.9rem;
+    }
+    
+    .social-links {
+        justify-content: center;
+        gap: 1.5rem;
+    }
+    
+    .social-links a {
+        width: 50px;
+        height: 50px;
+        font-size: 1.3rem;
+    }
+    
+    .footer-bottom {
+        padding: 1.25rem 1rem;
+    }
+    
+    .footer-bottom p {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer-content {
+        padding: 1.5rem 0.75rem 1rem;
+        gap: 1.5rem;
+    }
+    
+    .footer-section h4 {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+    
+    .footer-section p {
+        font-size: 0.85rem;
+    }
+    
+    .social-links a {
+        width: 45px;
+        height: 45px;
+        font-size: 1.1rem;
+    }
+    
+    .footer-bottom {
+        padding: 1rem 0.75rem;
+    }
+}
+
+/* Estados de hover mejorados */
+.footer-section p:has(i.fas.fa-envelope):hover,
+.footer-section p:has(i.fas.fa-phone):hover {
+    cursor: pointer;
+    color: #f59e0b;
+    transform: translateX(5px);
+}
+
+/* Efecto de partículas flotantes */
+.footer-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.footer-particles::before,
+.footer-particles::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #f59e0b;
+    border-radius: 50%;
+    opacity: 0.3;
+    animation: float-particles 15s infinite linear;
+}
+
+.footer-particles::before {
+    top: 20%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.footer-particles::after {
+    top: 60%;
+    right: 15%;
+    animation-delay: 7s;
+}
+
+@keyframes float-particles {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.3;
+    }
+    90% {
+        opacity: 0.3;
+    }
+    100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* FIN FOOTER */

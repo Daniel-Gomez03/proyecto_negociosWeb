@@ -16,24 +16,16 @@ class Products extends Table
             p.productId,
             p.productName,
             p.productDescription,
+            p.productDetails,
             p.productPrice,
-            p.productStock,
             p.productImgUrl,
+            p.productStock,
             p.productStatus,
             b.brandName,
-            c.categoryName,
-            CASE 
-                WHEN g.gunplaId IS NOT NULL THEN 'gunpla'
-                WHEN l.legoId IS NOT NULL THEN 'lego'
-                WHEN bl.blokeesId IS NOT NULL THEN 'blokees'
-                ELSE 'otro'
-            END AS productType
+            c.categoryName
         FROM products p
         INNER JOIN brands b ON p.productBrandId = b.brandId
-        INNER JOIN categories c ON p.productCategoryId = c.categoryId
-        LEFT JOIN products_gunpla g ON p.productId = g.gunplaProductId
-        LEFT JOIN products_lego l ON p.productId = l.legoProductId
-        LEFT JOIN products_blokees bl ON p.productId = bl.blokeesProductId";
+        INNER JOIN categories c ON p.productCategoryId = c.categoryId";
         
         $sqlstrCount = "SELECT COUNT(*) as count FROM products p";
         $conditions = [];
@@ -92,31 +84,14 @@ class Products extends Table
             p.productBrandId,
             p.productCategoryId,
             p.productDescription,
+            p.productDetails,
             p.productImgUrl,
             p.productStatus,
             b.brandName,
-            c.categoryName,
-            g.gunplaGrade,
-            g.gunplaScale,
-            g.gunplaPremiumBandai,
-            g.gunplaGundamBase,
-            l.legoLine,
-            l.legoSetNumber,
-            l.legoPieceCount,
-            bl.blokeesVersion,
-            bl.blokeesSize,
-            CASE 
-                WHEN g.gunplaId IS NOT NULL THEN 'gunpla'
-                WHEN l.legoId IS NOT NULL THEN 'lego'
-                WHEN bl.blokeesId IS NOT NULL THEN 'blokees'
-                ELSE 'otro'
-            END AS productType
+            c.categoryName
         FROM products p
         INNER JOIN brands b ON p.productBrandId = b.brandId
         INNER JOIN categories c ON p.productCategoryId = c.categoryId
-        LEFT JOIN products_gunpla g ON p.productId = g.gunplaProductId
-        LEFT JOIN products_lego l ON p.productId = l.legoProductId
-        LEFT JOIN products_blokees bl ON p.productId = bl.blokeesProductId
         WHERE p.productId = :productId";
         
         $params = ["productId" => $productId];
@@ -130,6 +105,7 @@ class Products extends Table
         int $productBrandId,
         int $productCategoryId,
         string $productDescription,
+        string $productDetails,
         string $productImgUrl,
         string $productStatus = 'ACT'
     ) {
@@ -140,6 +116,7 @@ class Products extends Table
             productBrandId, 
             productCategoryId, 
             productDescription, 
+            productDetails,
             productImgUrl, 
             productStatus
         ) VALUES (
@@ -149,6 +126,7 @@ class Products extends Table
             :productBrandId, 
             :productCategoryId, 
             :productDescription, 
+            :productDetails,
             :productImgUrl, 
             :productStatus
         )";
@@ -160,6 +138,7 @@ class Products extends Table
             "productBrandId" => $productBrandId,
             "productCategoryId" => $productCategoryId,
             "productDescription" => $productDescription,
+            "productDetails" => $productDetails,
             "productImgUrl" => $productImgUrl,
             "productStatus" => $productStatus
         ];
@@ -175,6 +154,7 @@ class Products extends Table
         int $productBrandId,
         int $productCategoryId,
         string $productDescription,
+        string $productDetails,
         string $productImgUrl,
         string $productStatus
     ) {
@@ -185,6 +165,7 @@ class Products extends Table
             productBrandId = :productBrandId,
             productCategoryId = :productCategoryId,
             productDescription = :productDescription, 
+            productDetails = :productDetails,
             productImgUrl = :productImgUrl, 
             productStatus = :productStatus 
         WHERE productId = :productId";
@@ -197,6 +178,7 @@ class Products extends Table
             "productBrandId" => $productBrandId,
             "productCategoryId" => $productCategoryId,
             "productDescription" => $productDescription,
+            "productDetails" => $productDetails,
             "productImgUrl" => $productImgUrl,
             "productStatus" => $productStatus
         ];
@@ -217,6 +199,7 @@ class Products extends Table
             p.productId, 
             p.productName, 
             p.productDescription, 
+            p.productDetails,
             p.productPrice,
             p.productStock,
             p.productImgUrl, 
@@ -239,6 +222,7 @@ class Products extends Table
             p.productId, 
             p.productName, 
             p.productDescription, 
+            p.productDetails,
             p.productPrice,
             p.productStock,
             p.productImgUrl, 
@@ -255,179 +239,4 @@ class Products extends Table
         $params = [];
         return self::obtenerRegistros($sqlstr, $params);
     }
-
-    public static function getDailyDeals()
-    {
-        $sqlstr = "SELECT 
-            p.productId, 
-            p.productName, 
-            p.productDescription, 
-            s.salePrice as productPrice,
-            p.productStock,
-            p.productImgUrl, 
-            p.productStatus,
-            b.brandName,
-            c.categoryName
-        FROM products p 
-        INNER JOIN brands b ON p.productBrandId = b.brandId
-        INNER JOIN categories c ON p.productCategoryId = c.categoryId
-        INNER JOIN sales s ON p.productId = s.productId 
-        WHERE s.saleStart <= NOW() AND s.saleEnd >= NOW()";
-        
-        $params = [];
-        return self::obtenerRegistros($sqlstr, $params);
-    }
-
-    // Métodos adicionales para los tipos específicos de productos
-    
-    public static function insertGunplaProduct(
-        int $productId,
-        string $gunplaGrade,
-        string $gunplaScale,
-        bool $gunplaPremiumBandai = false,
-        bool $gunplaGundamBase = false
-    ) {
-        $sqlstr = "INSERT INTO products_gunpla (
-            gunplaProductId,
-            gunplaGrade,
-            gunplaScale,
-            gunplaPremiumBandai,
-            gunplaGundamBase
-        ) VALUES (
-            :gunplaProductId,
-            :gunplaGrade,
-            :gunplaScale,
-            :gunplaPremiumBandai,
-            :gunplaGundamBase
-        )";
-        
-        $params = [
-            "gunplaProductId" => $productId,
-            "gunplaGrade" => $gunplaGrade,
-            "gunplaScale" => $gunplaScale,
-            "gunplaPremiumBandai" => $gunplaPremiumBandai ? 1 : 0,
-            "gunplaGundamBase" => $gunplaGundamBase ? 1 : 0
-        ];
-        
-        return self::executeNonQuery($sqlstr, $params);
-    }
-
-    public static function insertLegoProduct(
-        int $productId,
-        string $legoLine,
-        string $legoSetNumber,
-        int $legoPieceCount
-    ) {
-        $sqlstr = "INSERT INTO products_lego (
-            legoProductId,
-            legoLine,
-            legoSetNumber,
-            legoPieceCount
-        ) VALUES (
-            :legoProductId,
-            :legoLine,
-            :legoSetNumber,
-            :legoPieceCount
-        )";
-        
-        $params = [
-            "legoProductId" => $productId,
-            "legoLine" => $legoLine,
-            "legoSetNumber" => $legoSetNumber,
-            "legoPieceCount" => $legoPieceCount
-        ];
-        
-        return self::executeNonQuery($sqlstr, $params);
-    }
-
-    public static function insertBlokeesProduct(
-        int $productId,
-        string $blokeesVersion,
-        string $blokeesSize
-    ) {
-        $sqlstr = "INSERT INTO products_blokees (
-            blokeesProductId,
-            blokeesVersion,
-            blokeesSize
-        ) VALUES (
-            :blokeesProductId,
-            :blokeesVersion,
-            :blokeesSize
-        )";
-        
-        $params = [
-            "blokeesProductId" => $productId,
-            "blokeesVersion" => $blokeesVersion,
-            "blokeesSize" => $blokeesSize
-        ];
-        
-        return self::executeNonQuery($sqlstr, $params);
-    }
-
-    public static function updateGunplaProduct(
-        int $productId,
-        string $gunplaGrade,
-        string $gunplaScale,
-        bool $gunplaPremiumBandai,
-        bool $gunplaGundamBase
-    ) {
-        $sqlstr = "UPDATE products_gunpla SET 
-            gunplaGrade = :gunplaGrade,
-            gunplaScale = :gunplaScale,
-            gunplaPremiumBandai = :gunplaPremiumBandai,
-            gunplaGundamBase = :gunplaGundamBase
-        WHERE gunplaProductId = :productId";
-        
-        $params = [
-            "productId" => $productId,
-            "gunplaGrade" => $gunplaGrade,
-            "gunplaScale" => $gunplaScale,
-            "gunplaPremiumBandai" => $gunplaPremiumBandai ? 1 : 0,
-            "gunplaGundamBase" => $gunplaGundamBase ? 1 : 0
-        ];
-        
-        return self::executeNonQuery($sqlstr, $params);
-    }
-
-    public static function updateLegoProduct(
-        int $productId,
-        string $legoLine,
-        string $legoSetNumber,
-        int $legoPieceCount
-    ) {
-        $sqlstr = "UPDATE products_lego SET 
-            legoLine = :legoLine,
-            legoSetNumber = :legoSetNumber,
-            legoPieceCount = :legoPieceCount
-        WHERE legoProductId = :productId";
-        
-        $params = [
-            "productId" => $productId,
-            "legoLine" => $legoLine,
-            "legoSetNumber" => $legoSetNumber,
-            "legoPieceCount" => $legoPieceCount
-        ];
-        
-        return self::executeNonQuery($sqlstr, $params);
-    }
-
-    public static function updateBlokeesProduct(
-        int $productId,
-        string $blokeesVersion,
-        string $blokeesSize
-    ) {
-        $sqlstr = "UPDATE products_blokees SET 
-            blokeesVersion = :blokeesVersion,
-            blokeesSize = :blokeesSize
-        WHERE blokeesProductId = :productId";
-        
-        $params = [
-            "productId" => $productId,
-            "blokeesVersion" => $blokeesVersion,
-            "blokeesSize" => $blokeesSize
-        ];
-        
-        return self::executeNonQuery($sqlstr, $params);
-    }
-    
 }

@@ -49,24 +49,24 @@
             <span class="label">Subtotal de Productos:</span>
             <span>{{items_subtotal}} {{currency}}</span>
         </div>
-        
+
         {{if difference}}
         <div class="invoice-row">
             <span class="label">Ajuste/Descuento:</span>
             <span>-{{difference}} {{currency}}</span>
         </div>
         {{endif difference}}
-        
+
         <div class="invoice-row total-row">
             <span class="label">Monto Total:</span>
             <span>{{amount}} {{currency}}</span>
         </div>
-        
+
         <div class="invoice-row">
             <span class="label">Comisión PayPal:</span>
             <span>{{paypal_fee}} {{currency}}</span>
         </div>
-        
+
         <div class="invoice-row">
             <span class="label">Monto Neto Recibido:</span>
             <span>{{net_amount}} {{currency}}</span>
@@ -97,7 +97,7 @@
 
     <div class="invoice-actions">
         <button class="print-button" onclick="window.print()">Imprimir Factura</button>
-        <a href="index.php?page=Checkout_Catalogo" class="return-button">Seguir Comprando</a>
+        <a href="index.php?page=Orders_History" class="return-button">Volver al Historial</a>
     </div>
     {{endwith order}}
 </div>
@@ -107,6 +107,6 @@
 <div class="error-message">
     <h2>¡Ha ocurrido un problema!</h2>
     <p>{{error}}</p>
-    <p>Por favor, intenta de nuevo o contacta a soporte.</p>
+    <a href="index.php?page=Orders_History" class="return-button">Volver al Historial</a>
 </div>
 {{endif error}}

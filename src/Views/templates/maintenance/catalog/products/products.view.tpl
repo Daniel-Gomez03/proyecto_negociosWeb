@@ -26,6 +26,7 @@
         <thead>
             <tr>
                 <th> 
+                Id
                     {{ifnot OrderByProductId}}
                         <a href="index.php?page=Maintenance_Catalog_Products_Products&orderBy=productId&orderDescending=0">Id <i class="fas fa-sort"></i></a>
                     {{endifnot OrderByProductId}}
@@ -37,6 +38,7 @@
                     {{endif OrderProductId}}
                 </th>
                 <th class="left">
+                Nombre
                     {{ifnot OrderByProductName}}
                         <a href="index.php?page=Maintenance_Catalog_Products_Products&orderBy=productName&orderDescending=0">Nombre <i class="fas fa-sort"></i></a>
                     {{endifnot OrderByProductName}}
@@ -48,6 +50,7 @@
                     {{endif OrderProductName}}
                 </th>
                 <th>
+                Precio
                     {{ifnot OrderByProductPrice}}
                         <a href="index.php?page=Maintenance_Catalog_Products_Products&orderBy=productPrice&orderDescending=0">Precio <i class="fas fa-sort"></i></a>
                     {{endifnot OrderByProductPrice}}
@@ -59,6 +62,7 @@
                     {{endif OrderProductPrice}}
                 </th>
                 <th class="left">
+                Marca
                     {{ifnot OrderByBrandName}}
                         <a href="index.php?page=Maintenance_Catalog_Products_Products&orderBy=brandName&orderDescending=0">Marca <i class="fas fa-sort"></i></a>
                     {{endifnot OrderByBrandName}}
@@ -70,6 +74,7 @@
                     {{endif OrderBrandName}}
                 </th>
                 <th class="left">
+                Categoría
                     {{ifnot OrderByCategoryName}}
                         <a href="index.php?page=Maintenance_Catalog_Products_Products&orderBy=categoryName&orderDescending=0">Categoría <i class="fas fa-sort"></i></a>
                     {{endifnot OrderByCategoryName}}
@@ -79,17 +84,6 @@
                     {{if OrderCategoryName}}
                         <a href="index.php?page=Maintenance_Catalog_Products_Products&orderBy=categoryName&orderDescending=1">Categoría <i class="fas fa-sort-up"></i></a>
                     {{endif OrderCategoryName}}
-                </th>
-                <th class="left">
-                    {{ifnot OrderByProductType}}
-                        <a href="index.php?page=Maintenance_Catalog_Products_Products&orderBy=productType&orderDescending=0">Tipo <i class="fas fa-sort"></i></a>
-                    {{endifnot OrderByProductType}}
-                    {{if OrderProductTypeDesc}}
-                        <a href="index.php?page=Maintenance_Catalog_Products_Products&orderBy=clear&orderDescending=0">Tipo <i class="fas fa-sort-down"></i></a>
-                    {{endif OrderProductTypeDesc}}
-                    {{if OrderProductType}}
-                        <a href="index.php?page=Maintenance_Catalog_Products_Products&orderBy=productType&orderDescending=1">Tipo <i class="fas fa-sort-up"></i></a>
-                    {{endif OrderProductType}}
                 </th>
                 <th>Stock</th>
                 <th>Estado</th>
@@ -108,7 +102,6 @@
                     <td class="right">${{productPrice}}</td>
                     <td>{{brandName}}</td>
                     <td>{{categoryName}}</td>
-                    <td>{{productType}}</td>
                     <td class="center">{{productStock}}</td>
                     <td class="center">{{productStatusDsc}}</td>
                     <td class="center">

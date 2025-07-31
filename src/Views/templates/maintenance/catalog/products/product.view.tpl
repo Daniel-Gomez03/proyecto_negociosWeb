@@ -72,112 +72,6 @@
             {{endif productCategoryId_error}}
         </div>
         <div class="row my-2 align-center">
-            <label class="col-12 col-m-3" for="productType">Tipo de Producto</label>
-            <select class="col-12 col-m-9" name="productType" id="productType" {{readonly}} onchange="showSpecificFields()">
-                <option value="">Seleccione un tipo</option>
-                <option value="gunpla" {{if productType === 'gunpla'}}selected{{endif productType}}>Gunpla</option>
-                <option value="lego" {{if productType === 'lego'}}selected{{endif productType}}>LEGO</option>
-                <option value="blokees" {{if productType === 'blokees'}}selected{{endif productType}}>Blokees</option>
-            </select>
-        </div>
-
-        <!-- Campos específicos para Gunpla -->
-        <div id="gunplaFields" style="display: {{if productType === 'gunpla'}}block{{else}}none{{endif productType}};">
-            <div class="row my-2 align-center">
-                <label class="col-12 col-m-3" for="gunplaGrade">Grado</label>
-                <input class="col-12 col-m-9" {{readonly}} type="text" name="gunplaGrade" id="gunplaGrade"
-                    placeholder="Ej: Master Grade, High Grade" value="{{gunplaGrade}}" />
-                {{if gunplaGrade_error}}
-                <div class="col-12 col-m-9 offset-m-3 error">
-                    {{gunplaGrade_error}}
-                </div>
-                {{endif gunplaGrade_error}}
-            </div>
-            <div class="row my-2 align-center">
-                <label class="col-12 col-m-3" for="gunplaScale">Escala</label>
-                <input class="col-12 col-m-9" {{readonly}} type="text" name="gunplaScale" id="gunplaScale"
-                    placeholder="Ej: 1/144, 1/100" value="{{gunplaScale}}" />
-                {{if gunplaScale_error}}
-                <div class="col-12 col-m-9 offset-m-3 error">
-                    {{gunplaScale_error}}
-                </div>
-                {{endif gunplaScale_error}}
-            </div>
-            <div class="row my-2 align-center">
-                <label class="col-12 col-m-3">Características</label>
-                <div class="col-12 col-m-9">
-                    <label>
-                        <input type="checkbox" name="gunplaPremiumBandai" {{if gunplaPremiumBandai}}checked{{endif gunplaPremiumBandai}} {{readonly}} />
-                        Premium Bandai
-                    </label>
-                    &nbsp;
-                    <label>
-                        <input type="checkbox" name="gunplaGundamBase" {{if gunplaGundamBase}}checked{{endif gunplaGundamBase}} {{readonly}} />
-                        Gundam Base
-                    </label>
-                </div>
-            </div>
-        </div>
-
-        <!-- Campos específicos para LEGO -->
-        <div id="legoFields" style="display: {{if productType === 'lego'}}block{{else}}none{{endif productType}};">
-            <div class="row my-2 align-center">
-                <label class="col-12 col-m-3" for="legoLine">Línea</label>
-                <input class="col-12 col-m-9" {{readonly}} type="text" name="legoLine" id="legoLine"
-                    placeholder="Ej: Star Wars, Harry Potter" value="{{legoLine}}" />
-                {{if legoLine_error}}
-                <div class="col-12 col-m-9 offset-m-3 error">
-                    {{legoLine_error}}
-                </div>
-                {{endif legoLine_error}}
-            </div>
-            <div class="row my-2 align-center">
-                <label class="col-12 col-m-3" for="legoSetNumber">Número de Set</label>
-                <input class="col-12 col-m-9" {{readonly}} type="text" name="legoSetNumber" id="legoSetNumber"
-                    placeholder="Ej: 75375, 71043" value="{{legoSetNumber}}" />
-                {{if legoSetNumber_error}}
-                <div class="col-12 col-m-9 offset-m-3 error">
-                    {{legoSetNumber_error}}
-                </div>
-                {{endif legoSetNumber_error}}
-            </div>
-            <div class="row my-2 align-center">
-                <label class="col-12 col-m-3" for="legoPieceCount">Piezas</label>
-                <input class="col-12 col-m-9" {{readonly}} type="number" name="legoPieceCount" id="legoPieceCount"
-                    placeholder="Número de piezas" value="{{legoPieceCount}}" />
-                {{if legoPieceCount_error}}
-                <div class="col-12 col-m-9 offset-m-3 error">
-                    {{legoPieceCount_error}}
-                </div>
-                {{endif legoPieceCount_error}}
-            </div>
-        </div>
-
-        <!-- Campos específicos para Blokees -->
-        <div id="blokeesFields" style="display: {{if productType === 'blokees'}}block{{else}}none{{endif productType}};">
-            <div class="row my-2 align-center">
-                <label class="col-12 col-m-3" for="blokeesVersion">Versión</label>
-                <input class="col-12 col-m-9" {{readonly}} type="text" name="blokeesVersion" id="blokeesVersion"
-                    placeholder="Ej: Edición Estándar, Deluxe" value="{{blokeesVersion}}" />
-                {{if blokeesVersion_error}}
-                <div class="col-12 col-m-9 offset-m-3 error">
-                    {{blokeesVersion_error}}
-                </div>
-                {{endif blokeesVersion_error}}
-            </div>
-            <div class="row my-2 align-center">
-                <label class="col-12 col-m-3" for="blokeesSize">Tamaño</label>
-                <input class="col-12 col-m-9" {{readonly}} type="text" name="blokeesSize" id="blokeesSize"
-                    placeholder="Ej: Pequeño (12cm), Grande (25cm)" value="{{blokeesSize}}" />
-                {{if blokeesSize_error}}
-                <div class="col-12 col-m-9 offset-m-3 error">
-                    {{blokeesSize_error}}
-                </div>
-                {{endif blokeesSize_error}}
-            </div>
-        </div>
-
-        <div class="row my-2 align-center">
             <label class="col-12 col-m-3" for="productDescription">Descripción</label>
             <textarea class="col-12 col-m-9" {{readonly}} name="productDescription" id="productDescription"
                 placeholder="Descripción del Producto">{{productDescription}}</textarea>
@@ -186,6 +80,16 @@
                 {{productDescription_error}}
             </div>
             {{endif productDescription_error}}
+        </div>
+        <div class="row my-2 align-center">
+            <label class="col-12 col-m-3" for="productDetails">Detalles</label>
+            <textarea class="col-12 col-m-9" {{readonly}} name="productDetails" id="productDetails"
+                placeholder="Detalles del Producto">{{productDetails}}</textarea>
+            {{if productDetails_error}}
+            <div class="col-12 col-m-9 offset-m-3 error">
+                {{productDetails_error}}
+            </div>
+            {{endif productDetails_error}}
         </div>
         <div class="row my-2 align-center">
             <label class="col-12 col-m-3" for="productImgUrl">Url de Imagen</label>
