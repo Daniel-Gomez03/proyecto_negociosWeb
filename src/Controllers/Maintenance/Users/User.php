@@ -2,13 +2,13 @@
     namespace Controllers\Maintenance\Users;
  
 
-    use Controllers\PublicController;
+    use Controllers\PrivateController;
     use Views\Renderer;
     use Dao\Maintenance\Users\Users as UsersDao;
     use Utilities\Site;
     use Utilities\Validators;
 
-     class User extends PublicController {
+     class User extends PrivateController {
 
     
 

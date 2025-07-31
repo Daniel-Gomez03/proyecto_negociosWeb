@@ -9,7 +9,7 @@
 
     <div class="row my-2 align-center">
       <label class="col-12 col-m-3" for="fncodD">Código</label>
-      <input class="col-12 col-m-9" readonly disabled type="text" name="fncodD" id="fncodD"
+      <input class="col-12 col-m-9" {{~readonly}} type="text" name="fncodD" id="fncodD"
         value="{{fncod}}" />
       <input type="hidden" name="mode" value="{{~mode}}" />
       <input type="hidden" name="fncod" value="{{fncod}}" />

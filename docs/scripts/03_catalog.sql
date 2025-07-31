@@ -1,4 +1,4 @@
--- Active: 1750516748725@@127.0.0.1@3306@hasbunstore
+-- Active: 1750517049055@@127.0.0.1@3306@hasbunstore
 -- Table brands
 CREATE TABLE `brands` (
     `brandId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -8,7 +8,7 @@ CREATE TABLE `brands` (
     UNIQUE (`brandName`)
 ) ENGINE=InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET=utf8mb4;
 
--- Table categories
+-- Tab`le categories
 CREATE TABLE `categories` (
     `categoryId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `categoryName` VARCHAR(255) NOT NULL,
