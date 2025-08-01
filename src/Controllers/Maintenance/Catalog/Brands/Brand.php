@@ -1,7 +1,7 @@
 <?php
 namespace Controllers\Maintenance\Catalog\Brands;
 
-use Controllers\PublicController;
+use Controllers\PrivateController;
 use Views\Renderer;
 use Dao\Maintenance\Catalog\Brands\Brands as DaoBrands;
 use Utilities\Site;
@@ -9,7 +9,7 @@ use Utilities\Validators;
 
 const LIST_URL = "index.php?page=Maintenance_Catalog_Brands_Brands";
 
-class Brand extends PublicController
+class Brand extends PrivateController
 {
     private array $viewData;
     private array $modes;

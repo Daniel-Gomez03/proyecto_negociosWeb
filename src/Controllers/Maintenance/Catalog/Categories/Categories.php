@@ -1,13 +1,13 @@
 <?php
 namespace Controllers\Maintenance\Catalog\Categories;
 
-use Controllers\PublicController;
+use Controllers\PrivateController;
 use Utilities\Context;
 use Utilities\Paging;
 use Dao\Maintenance\Catalog\Categories\Categories as DaoCategories;
 use Views\Renderer;
 
-class Categories extends PublicController
+class Categories extends PrivateController
 {
     private $partialName = "";
     private $status = "";

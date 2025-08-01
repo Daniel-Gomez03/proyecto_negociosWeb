@@ -1,7 +1,7 @@
 <?php
 namespace Controllers\Maintenance\Catalog\Products;
 
-use Controllers\PublicController;
+use Controllers\PrivateController;
 use Views\Renderer;
 use Dao\Maintenance\Catalog\Products\Products as ProductsDao;
 use Dao\Maintenance\Catalog\Brands\Brands as BrandsDao;
@@ -11,7 +11,7 @@ use Utilities\Validators;
 
 const LIST_URL = "index.php?page=Maintenance_Catalog_Products_Products";
 
-class Product extends PublicController
+class Product extends PrivateController
 {
     private array $viewData;
     private array $modes;

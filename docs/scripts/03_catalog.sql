@@ -18,20 +18,20 @@ CREATE TABLE `categories` (
 ) ENGINE=InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET=utf8mb4;
 
 -- Table products
-CREATE TABLE `products` (
-    `productId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `productName` VARCHAR(255) NOT NULL,
-    `productPrice` DECIMAL(10,2) NOT NULL,
-    `productStock` INT NOT NULL DEFAULT 0,
-    `productBrandId` INT NOT NULL,
-    `productCategoryId` INT NOT NULL,
-    `productDescription` VARCHAR(255) NOT NULL,
-    `productImgUrl` VARCHAR(255) NOT NULL,
-    `productStatus` CHAR(3) NOT NULL DEFAULT 'ACT',
-    UNIQUE (`productName`, `productBrandId`),
-    CONSTRAINT `fk_products_brands` FOREIGN KEY (`productBrandId`) REFERENCES `brands`(`brandId`) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT `fk_products_categories` FOREIGN KEY (`productCategoryId`) REFERENCES `categories`(`categoryId`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET=utf8mb4;
+-- CREATE TABLE `products` (
+--     `productId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+--     `productName` VARCHAR(255) NOT NULL,
+--     `productPrice` DECIMAL(10,2) NOT NULL,
+--     `productStock` INT NOT NULL DEFAULT 0,
+--     `productBrandId` INT NOT NULL,
+--     `productCategoryId` INT NOT NULL,
+--     `productDescription` VARCHAR(255) NOT NULL,
+--     `productImgUrl` VARCHAR(255) NOT NULL,
+--     `productStatus` CHAR(3) NOT NULL DEFAULT 'ACT',
+--     UNIQUE (`productName`, `productBrandId`),
+--     CONSTRAINT `fk_products_brands` FOREIGN KEY (`productBrandId`) REFERENCES `brands`(`brandId`) ON DELETE CASCADE ON UPDATE CASCADE,
+--     CONSTRAINT `fk_products_categories` FOREIGN KEY (`productCategoryId`) REFERENCES `categories`(`categoryId`) ON DELETE CASCADE ON UPDATE CASCADE
+-- ) ENGINE=InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `products` (
     `productId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
