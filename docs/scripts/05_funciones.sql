@@ -1,3 +1,4 @@
+-- Active: 1750517049055@@127.0.0.1@3306@hasbunstore
 Roles
 INSERT INTO
     `roles` (
@@ -10,7 +11,7 @@ VALUES (
         'administrador',
         'ACT'
     ),
-    ('pbl', 'publico', 'ACT') Funciones
+    ('pbl', 'publico', 'ACT')
 
 INSERT INTO
     `funciones` (
