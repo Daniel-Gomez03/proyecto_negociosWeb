@@ -1,4 +1,4 @@
-<h1>Funciones</h1>
+<h1>Administración Funciones</h1>
 <section class="grid">
     <div class="row">
         <form class="col-12 col-m-8" action="index.php" method="get">
@@ -26,36 +26,36 @@
     <table>
         <thead>
             <tr>
-                <th class="left">Código
+                <th class="left">
                     {{ifnot OrderByFncod}}
                     <a href="index.php?page=Maintenance_Funciones_Funciones&orderBy=fncod&orderDescending=0">Código<i
-                            class="fas fa-sort"></i></a>
+                                class="fas fa-sort"></i></a>
                     {{endifnot OrderByFncod}}
                     {{if OrderFncodDesc}}
                     <a href="index.php?page=Maintenance_Funciones_Funciones&orderBy=clear&orderDescending=0">Código<i
-                            class="fas fa-sort-down"></i></a>
+                                class="fas fa-sort-down"></i></a>
                     {{endif OrderFncodDesc}}
                     {{if OrderFncod}}
                     <a href="index.php?page=Maintenance_Funciones_Funciones&orderBy=fncod&orderDescending=1">Código<i
-                            class="fas fa-sort-up"></i></a>
+                                class="fas fa-sort-up"></i></a>
                     {{endif OrderFncod}}
                 </th>
-                <th class="left">Descripción
+                <th class="left">
                     {{ifnot OrderByFndsc}}
                     <a href="index.php?page=Maintenance_Funciones_Funciones&orderBy=fndsc&orderDescending=0">Descripción<i
-                            class="fas fa-sort"></i></a>
+                                class="fas fa-sort"></i></a>
                     {{endifnot OrderByFndsc}}
                     {{if OrderFndscDesc}}
                     <a href="index.php?page=Maintenance_Funciones_Funciones&orderBy=clear&orderDescending=0">Descripción<i
-                            class="fas fa-sort-down"></i></a>
+                                class="fas fa-sort-down"></i></a>
                     {{endif OrderFndscDesc}}
                     {{if OrderFndsc}}
                     <a href="index.php?page=Maintenance_Funciones_Funciones&orderBy=fndsc&orderDescending=1">Descripción<i
-                            class="fas fa-sort-up"></i></a>
+                                class="fas fa-sort-up"></i></a>
                     {{endif OrderFndsc}}
                 </th>
                 <th class="center">Estado</th>
-                <th class="center"></th>
+                <th class="center">Tipo</th> 
                 <th><a href="index.php?page=Maintenance_Funciones_Funcion&mode=INS">Nuevo</a></th>
             </tr>
         </thead>

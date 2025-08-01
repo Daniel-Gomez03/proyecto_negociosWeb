@@ -9,7 +9,7 @@ use Dao\Maintenance\Funciones\Funciones as DaoFunciones;
 use Views\Renderer;
 
 class Funciones extends PrivateController {
-    private $partialName = "";
+    private $partialDescription = "";
     private $status = "";
     private $type = "";
     private $orderBy = "";
@@ -17,15 +17,13 @@ class Funciones extends PrivateController {
     private $pageNumber = 1;
     private $itemsPerPage = 10;
     private $viewData = [];
-    private $funciones = [];
-    private $funcionesCount = 0;
-    private $pages = 0;
 
     public function run(): void {
         $this->getParamsFromContext();
         $this->getParams();
+        
         $tmpFunciones = DaoFunciones::getFunciones(
-            $this->partialName,
+            $this->partialDescription,
             $this->status,
             $this->type,
             $this->orderBy,
@@ -33,24 +31,30 @@ class Funciones extends PrivateController {
             $this->pageNumber - 1,
             $this->itemsPerPage
         );
-        $this->funciones = $tmpFunciones["funciones"];
-        $this->funcionesCount = $tmpFunciones["total"];
-        $this->pages = $this->funcionesCount > 0 ? ceil($this->funcionesCount / $this->itemsPerPage) : 1;
-        if ($this->pageNumber > $this->pages) {
-            $this->pageNumber = $this->pages;
+
+        $funciones = $tmpFunciones["funciones"];
+        $funcionesCount = $tmpFunciones["total"];
+        $pages = $funcionesCount > 0 ? ceil($funcionesCount / $this->itemsPerPage) : 1;
+        
+        if ($this->pageNumber > $pages) {
+            $this->pageNumber = $pages;
         }
+
         $this->setParamsToContext();
-        $this->setParamsToDataView();
+        $this->setParamsToDataView($funciones, $funcionesCount, $pages);
+        
         Renderer::render("maintenance/funciones/funciones", $this->viewData);
     }
 
     private function getParams(): void {
-        $this->partialName = $_GET["partialName"] ?? $this->partialName;
+        $this->partialDescription = $_GET["partialDesc"] ?? $this->partialDescription;
         $this->status = (isset($_GET["status"]) && in_array($_GET["status"], ['ACT', 'INA', 'EMP'])) ? $_GET["status"] : $this->status;
         if ($this->status === "EMP") {
             $this->status = "";
         }
         $this->type = $_GET["type"] ?? $this->type;
+        
+        // Se agregó 'fntyp' a la lista de campos de ordenamiento
         $this->orderBy = (isset($_GET["orderBy"]) && in_array($_GET["orderBy"], ["fncod", "fndsc", "fnest", "fntyp", "clear"])) ? $_GET["orderBy"] : $this->orderBy;
         if ($this->orderBy === "clear") {
             $this->orderBy = "";
@@ -61,7 +65,7 @@ class Funciones extends PrivateController {
     }
 
     private function getParamsFromContext(): void {
-        $this->partialName = Context::getContextByKey("funciones_partialName");
+        $this->partialDescription = Context::getContextByKey("funciones_partialDescription");
         $this->status = Context::getContextByKey("funciones_status");
         $this->type = Context::getContextByKey("funciones_type");
         $this->orderBy = Context::getContextByKey("funciones_orderBy");
@@ -73,7 +77,7 @@ class Funciones extends PrivateController {
     }
 
     private function setParamsToContext(): void {
-        Context::setContext("funciones_partialName", $this->partialName, true);
+        Context::setContext("funciones_partialDescription", $this->partialDescription, true);
         Context::setContext("funciones_status", $this->status, true);
         Context::setContext("funciones_type", $this->type, true);
         Context::setContext("funciones_orderBy", $this->orderBy, true);
@@ -82,17 +86,17 @@ class Funciones extends PrivateController {
         Context::setContext("funciones_itemsPerPage", $this->itemsPerPage, true);
     }
 
-    private function setParamsToDataView(): void {
-        $this->viewData["partialName"] = $this->partialName;
+    private function setParamsToDataView(array $funciones, int $funcionesCount, int $pages): void {
+        $this->viewData["partialDesc"] = $this->partialDescription;
         $this->viewData["status"] = $this->status;
         $this->viewData["type"] = $this->type;
         $this->viewData["orderBy"] = $this->orderBy;
         $this->viewData["orderDescending"] = $this->orderDescending;
         $this->viewData["pageNum"] = $this->pageNumber;
         $this->viewData["itemsPerPage"] = $this->itemsPerPage;
-        $this->viewData["funcionesCount"] = $this->funcionesCount;
-        $this->viewData["pages"] = $this->pages;
-        $this->viewData["funciones"] = $this->funciones;
+        $this->viewData["funcionesCount"] = $funcionesCount;
+        $this->viewData["pages"] = $pages;
+        $this->viewData["funciones"] = $funciones;
 
         if ($this->orderBy !== "") {
             $orderByKey = "Order" . ucfirst($this->orderBy);
@@ -108,7 +112,7 @@ class Funciones extends PrivateController {
         $this->viewData[$statusKey] = "selected";
 
         $pagination = Paging::getPagination(
-            $this->funcionesCount,
+            $funcionesCount,
             $this->itemsPerPage,
             $this->pageNumber,
             "index.php?page=Maintenance_Funciones_Funciones",
