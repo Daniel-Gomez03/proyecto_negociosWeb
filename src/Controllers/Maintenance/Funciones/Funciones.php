@@ -2,13 +2,13 @@
 
 namespace Controllers\Maintenance\Funciones;
 
-use Controllers\PublicController;
+use Controllers\PrivateController;
 use Utilities\Context;
 use Utilities\Paging;
 use Dao\Maintenance\Funciones\Funciones as DaoFunciones;
 use Views\Renderer;
 
-class Funciones extends PublicController {
+class Funciones extends PrivateController {
     private $partialName = "";
     private $status = "";
     private $type = "";

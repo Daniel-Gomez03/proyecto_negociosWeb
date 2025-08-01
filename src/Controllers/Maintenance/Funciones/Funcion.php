@@ -1,13 +1,13 @@
 <?php
 namespace Controllers\Maintenance\Funciones;
 
-use Controllers\PublicController;
+use Controllers\PrivateController;
 use Views\Renderer;
 use Dao\Maintenance\Funciones\Funciones as FuncionesDao;
 use Utilities\Site;
 use Utilities\Validators;
 
-class Funcion extends PublicController {
+class Funcion extends PrivateController {
     private $viewData = [];
     private $mode = "DSP";
     private $modeDescriptions = [

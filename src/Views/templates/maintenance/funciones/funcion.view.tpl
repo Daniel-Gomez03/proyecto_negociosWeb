@@ -34,14 +34,6 @@
         <option value="INA" {{funcest_ina}}>Inactivo</option>
       </select>
     </div>
-
-    <div class="row my-2 align-center">
-      <label class="col-12 col-m-3" for="fntyp">Tipo</label>
-      <select name="fntyp" id="fntyp" class="col-12 col-m-9" {{if ~readonly}} readonly disabled {{endif ~readonly}}>
-        <option value="PRV" {{fntyp_prv}}>Privado</option>
-        <option value="PUB" {{fntyp_pub}}>Público</option>
-      </select>
-    </div>
   {{endwith funcion}}
 
     <div class="row my-4 align-center flex-end">

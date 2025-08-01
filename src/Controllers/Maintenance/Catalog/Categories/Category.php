@@ -1,7 +1,7 @@
 <?php
 namespace Controllers\Maintenance\Catalog\Categories;
 
-use Controllers\PublicController;
+use Controllers\PrivateController;
 use Views\Renderer;
 use Dao\Maintenance\Catalog\Categories\Categories as DaoCategories;
 use Utilities\Site;
@@ -9,7 +9,7 @@ use Utilities\Validators;
 
 const LIST_URL = "index.php?page=Maintenance_Catalog_Categories_Categories";
 
-class Category extends PublicController
+class Category extends PrivateController
 {
     private array $viewData;
     private array $modes;

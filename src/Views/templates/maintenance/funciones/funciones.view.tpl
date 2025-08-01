@@ -55,7 +55,7 @@
                     {{endif OrderFndsc}}
                 </th>
                 <th class="center">Estado</th>
-                <th class="center">Tipo</th>
+                <th class="center"></th>
                 <th><a href="index.php?page=Maintenance_Funciones_Funcion&mode=INS">Nuevo</a></th>
             </tr>
         </thead>

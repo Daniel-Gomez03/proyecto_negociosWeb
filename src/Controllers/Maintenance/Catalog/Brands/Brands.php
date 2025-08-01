@@ -1,13 +1,13 @@
 <?php
 namespace Controllers\Maintenance\Catalog\Brands;
 
-use Controllers\PublicController;
+use Controllers\PrivateController;
 use Utilities\Context;
 use Utilities\Paging;
 use Dao\Maintenance\Catalog\Brands\Brands as DaoBrands;
 use Views\Renderer;
 
-class Brands extends PublicController
+class Brands extends PrivateController
 {
     private $partialName = "";
     private $status = "";
