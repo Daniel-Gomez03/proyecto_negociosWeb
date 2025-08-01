@@ -5,68 +5,77 @@
     use Dao\Table;
 
     class Roles extends Table {
-        public static function getRoles(
-            string $partialDescription = "",
-            string $status = "",
-            string $orderBy = "",
-            bool $orderDescending = false,
-            int $page = 0,
-            int $itemsPerPage = 10
-        ): array {
-            $sqlstr = "SELECT rolescod, rolesdsc, rolesest,
-                        CASE rolesest
-                            WHEN 'ACT' THEN 'Activo'
-                            WHEN 'INA' THEN 'Inactivo'
-                            ELSE 'Sin Asignar'
-                        END AS rolesestDsc
-                    FROM roles";
-            $sqlstrCount = "SELECT COUNT(*) AS count FROM roles";
-            $conditions = [];
-            $params = [];
+       public static function getRoles(
+    string $partialDescription = "",
+    string $status = "",
+    string $orderBy = "",
+    bool $orderDescending = false,
+    int $page = 0,
+    int $itemsPerPage = 10
+): array {
+    $page = max(0, $page);
+    $itemsPerPage = max(1, $itemsPerPage);
 
-            if ($partialDescription !== "") {
-                $conditions[] = "rolesdsc LIKE :partialDescription";
-                $params["partialDescription"] = "%" . $partialDescription . "%";
-            }
+    $sqlstr = "SELECT rolescod, rolesdsc, rolesest,
+                    CASE rolesest
+                        WHEN 'ACT' THEN 'Activo'
+                        WHEN 'INA' THEN 'Inactivo'
+                        ELSE 'Sin Asignar'
+                    END AS rolesestDsc
+               FROM roles";
 
-            if (!in_array($status, ["ACT", "INA", ""])) {
-                throw new \Exception("Error Processing Request: Status has invalid value");
-            }
-            if ($status !== "") {
-                $conditions[] = "rolesest = :status";
-                $params["status"] = $status;
-            }
+    $sqlstrCount = "SELECT COUNT(*) AS count FROM roles";
+    $conditions = [];
+    $params = [];
 
-            if (!empty($conditions)) {
-                $sqlstr .= " WHERE " . implode(" AND ", $conditions);
-                $sqlstrCount .= " WHERE " . implode(" AND ", $conditions);
-            }
+    if ($partialDescription !== "") {
+        $conditions[] = "rolesdsc LIKE :partialDescription";
+        $params["partialDescription"] = "%" . $partialDescription . "%";
+    }
 
-            if (!in_array($orderBy, ["rolescod", "rolesdsc", "rolesest", ""])) {
-                throw new \Exception("Error Processing Request: OrderBy has invalid value");
-            }
-            if ($orderBy !== "") {
-                $sqlstr .= " ORDER BY " . $orderBy;
-                if ($orderDescending) {
-                    $sqlstr .= " DESC";
-                }
-            }
+    if (!in_array($status, ["ACT", "INA", ""])) {
+        throw new \Exception("Error Processing Request: Status has invalid value");
+    }
+    if ($status !== "") {
+        $conditions[] = "rolesest = :status";
+        $params["status"] = $status;
+    }
 
-            $numeroDeRegistros = self::obtenerUnRegistro($sqlstrCount, $params)["count"];
-            $pagesCount = ceil($numeroDeRegistros / $itemsPerPage);
-            if ($page > $pagesCount - 1) {
-                $page = $pagesCount - 1;
-            }
+    if (!empty($conditions)) {
+        $whereClause = " WHERE " . implode(" AND ", $conditions);
+        $sqlstr .= $whereClause;
+        $sqlstrCount .= $whereClause;
+    }
 
-            $sqlstr .= " LIMIT " . $page * $itemsPerPage . ", " . $itemsPerPage;
-            $registros = self::obtenerRegistros($sqlstr, $params);
-            return [
-                "roles" => $registros,
-                "total" => $numeroDeRegistros,
-                "page" => $page,
-                "itemsPerPage" => $itemsPerPage
-            ];
+    if (!in_array($orderBy, ["rolescod", "rolesdsc", "rolesest", ""])) {
+        throw new \Exception("Error Processing Request: OrderBy has invalid value");
+    }
+    if ($orderBy !== "") {
+        $sqlstr .= " ORDER BY " . $orderBy;
+        if ($orderDescending) {
+            $sqlstr .= " DESC";
         }
+    }
+
+    $numeroDeRegistros = self::obtenerUnRegistro($sqlstrCount, $params)["count"];
+    $pagesCount = ceil($numeroDeRegistros / $itemsPerPage);
+    if ($page > max(0, $pagesCount - 1)) {
+        $page = max(0, $pagesCount - 1);
+    }
+
+    $offset = $page * $itemsPerPage;
+    $sqlstr .= " LIMIT $offset, $itemsPerPage";
+
+    $registros = self::obtenerRegistros($sqlstr, $params);
+
+    return [
+        "roles" => $registros,
+        "total" => $numeroDeRegistros,
+        "page" => $page,
+        "itemsPerPage" => $itemsPerPage
+    ];
+}
+
 
         public static function getRoleById(string $rolescod) {
             $sqlstr = "SELECT * FROM roles WHERE rolescod = :rolescod;";

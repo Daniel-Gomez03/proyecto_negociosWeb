@@ -52,15 +52,14 @@
 
 
 
+    
+
     <div class="row my-2 align-center">
       <label class="col-12 col-m-3" for="usertipo">Tipo</label>
-      <input class="col-12 col-m-9" {{~readonly}} type="text" name="usertipo" id="usertipo" placeholder="Tipo"
-        value="{{usertipo}}" />
-      {{if usertipo_error}}
-      <div class="col-12 col-m-9 offset-m-3 error">
-        {{usertipo_error}}
-      </div>
-      {{endif usertipo_error}}
+      <select name="usertipo" id="usertipo" class="col-12 col-m-9" {{if ~readonly}}  {{endif ~readonly}}>
+        <option value="ADM" {{usertipo_act}}>Administrador</option>
+        <option value="PBL" {{usertipo_ina}}>Publico</option>
+      </select>
     </div>
 
     <div class="row my-2 align-center">

@@ -142,31 +142,41 @@
         private function handlePostAction(){
             switch($this->mode){
                 case "INS":
-                    $this->user["userpswd"] = password_hash($this->user["userpswd"], PASSWORD_BCRYPT);
-                    $this->user["userpswdexp"] = date('Y-m-d', time() + 7776000); 
-                    $this->user["useractcod"] = hash("sha256", $this->user["useremail"] . time()); 
-                    $this->user["userpswdchg"] = date('Y-m-d H:i:s'); 
-                    $this->user["userpswdest"] = "ACT"; 
-                    $result = UsersDao::insertUser(
-                        $this->user["useremail"],
-                        $this->user["username"],
-                        $this->user["userpswd"],
-                        $this->user["userest"],
-                        $this->user["usertipo"],
-                        $this->user["userpswdexp"],
-                        $this->user["userpswdest"],
-                        $this->user["useractcod"],
-                        $this->user["userpswdchg"]
+    // Validar si el correo ya existe
+   
 
-                    );
-                    if (!$result) {
-                        throw new \Exception("Error al insertar el usuario", 1);
-                    }
-                    else{
-                        Site::redirectToWithMsg("index.php?page=Maintenance_Users_Users", "Usuario creado exitosamente");
-                    }
-                    
-                    break;
+    if(UsersDao::getEmail($this->user["useremail"])){
+        throw new \Exception("El correo ya se encuentra registrado.");
+
+    }
+
+    // Si no existe, continuar con la inserción
+    $this->user["userpswd"] = password_hash($this->user["userpswd"], PASSWORD_BCRYPT);
+    $this->user["userpswdexp"] = date('Y-m-d', time() + 7776000); 
+    $this->user["useractcod"] = hash("sha256", $this->user["useremail"] . time()); 
+    $this->user["userpswdchg"] = date('Y-m-d H:i:s'); 
+    $this->user["userpswdest"] = "ACT"; 
+
+    $result = UsersDao::insertUser(
+        $this->user["useremail"],
+        $this->user["username"],
+        $this->user["userpswd"],
+        $this->user["userest"],
+        $this->user["usertipo"],
+        $this->user["userpswdexp"],
+        $this->user["userpswdest"],
+        $this->user["useractcod"],
+        $this->user["userpswdchg"]
+    );
+
+    if (!$result) {
+        throw new \Exception("Error al insertar el usuario", 1);
+    } else {
+        Site::redirectToWithMsg("index.php?page=Maintenance_Users_Users", "Usuario creado exitosamente");
+    }
+    break;
+
+
                 case "UPD":
                     if (empty($this->user["userpswd"])) {
                     throw new \Exception("Debe ingresar una nueva contraseña.");

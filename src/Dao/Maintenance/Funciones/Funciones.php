@@ -4,6 +4,64 @@ namespace Dao\Maintenance\Funciones;
 
 use Dao\Table;
 
+
+    class Funciones extends Table {
+       public static function getFunciones(
+    string $partialDescription = "",
+    string $status = "",
+    string $type = "",
+    string $orderBy = "",
+    bool $orderDescending = false,
+    int $page = 0,
+    int $itemsPerPage = 10
+): array {
+    $page = max(0, $page);
+    $itemsPerPage = max(1, $itemsPerPage);
+
+    $sqlstr = "SELECT fncod, fndsc, fnest, fntyp,
+                    CASE fnest
+                        WHEN 'ACT' THEN 'Activo'
+                        WHEN 'INA' THEN 'Inactivo'
+                        ELSE 'Sin Asignar'
+                    END AS fnestDsc
+               FROM funciones";
+
+    $sqlstrCount = "SELECT COUNT(*) AS count FROM funciones";
+    $conditions = [];
+    $params = [];
+
+    if ($partialDescription !== "") {
+        $conditions[] = "fndsc LIKE :partialDescription";
+        $params["partialDescription"] = "%" . $partialDescription . "%";
+    }
+
+    if (!in_array($status, ["ACT", "INA", ""])) {
+        throw new \Exception("Error Processing Request: Status has invalid value");
+    }
+    if ($status !== "") {
+        $conditions[] = "fnest = :status";
+        $params["status"] = $status;
+    }
+
+    if ($type !== "") {
+        $conditions[] = "fntyp = :type";
+        $params["type"] = $type;
+    }
+
+    if (!empty($conditions)) {
+        $whereClause = " WHERE " . implode(" AND ", $conditions);
+        $sqlstr .= $whereClause;
+        $sqlstrCount .= $whereClause;
+    }
+
+    if (!in_array($orderBy, ["fncod", "fndsc", "fnest", "fntyp", ""])) {
+        throw new \Exception("Error Processing Request: OrderBy has invalid value");
+    }
+    if ($orderBy !== "") {
+        $sqlstr .= " ORDER BY " . $orderBy;
+        if ($orderDescending) {
+            $sqlstr .= " DESC";
+
 class Funciones extends Table {
     public static function getFunciones(
         string $partialDescription = "",
@@ -57,6 +115,27 @@ class Funciones extends Table {
                 $sqlstr .= " DESC";
             }
         }
+    }
+
+    $numeroDeRegistros = self::obtenerUnRegistro($sqlstrCount, $params)["count"];
+    $pagesCount = ceil($numeroDeRegistros / $itemsPerPage);
+    if ($page > max(0, $pagesCount - 1)) {
+        $page = max(0, $pagesCount - 1);
+    }
+
+    $offset = $page * $itemsPerPage;
+    $sqlstr .= " LIMIT $offset, $itemsPerPage";
+
+    $registros = self::obtenerRegistros($sqlstr, $params);
+
+    return [
+        "funciones" => $registros,
+        "total" => $numeroDeRegistros,
+        "page" => $page,
+        "itemsPerPage" => $itemsPerPage
+    ];
+}
+
 
         $numeroDeRegistros = self::obtenerUnRegistro($sqlstrCount, $params)["count"];
         $pagesCount = ceil($numeroDeRegistros / $itemsPerPage);

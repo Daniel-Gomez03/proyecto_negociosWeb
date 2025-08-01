@@ -23,6 +23,7 @@
         public function run(): void {
             $this->getParamsFromContext();
             $this->getParams();
+
             $tmpUsers = DaoUsers::getUsers(
                 $this->partialName,
                 $this->status,
@@ -31,8 +32,11 @@
                 $this->pageNumber - 1,
                 $this->itemsPerPage
             );
+            
             $this->users = $tmpUsers["users"];
+           
             $this->usersCount = $tmpUsers["total"];
+            
             $this->pages = $this->usersCount > 0 ? ceil($this->usersCount / $this->itemsPerPage) : 1;
             if ($this->pageNumber > $this->pages) {
                 $this->pageNumber = $this->pages;
