@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+[ <!DOCTYPE html>
 <html>
 
 <head>
@@ -30,23 +30,63 @@
       <ul>
         <li><a href="index.php?page={{PRIVATE_DEFAULT_CONTROLLER}}"><i class="fas fa-home"></i>&nbsp;Inicio</a></li>
         {{foreach NAVIGATION}}
-            <li><a href="{{nav_url}}">{{nav_label}}</a></li>
+        <li><a href="{{nav_url}}">{{nav_label}}</a></li>
         {{endfor NAVIGATION}}
         <li><a href="index.php?page=sec_logout"><i class="fas fa-sign-out-alt"></i>&nbsp;Salir</a></li>
       </ul>
     </nav>
+    <span>
+      {{if ~CART_ITEMS}}
+      <a href="index.php?page=Checkout_Checkout">
+        <i class="fa-solid fa-cart-shopping"></i>
+      </a>
+      {{~CART_ITEMS}}
+      {{endif ~CART_ITEMS}}
+    </span>
     {{with login}}
-    <span class="username">{{userName}} <a href="index.php?page=sec_logout"><i class="fas fa-sign-out-alt"></i></a></span>
+    <span class="username">{{userName}}
+      <a href="index.php?page=sec_logout">
+        <i class="fas fa-sign-out-alt"></i>
+      </a>
+    </span>
     {{endwith login}}
   </header>
   <main>
     {{{page_content}}}
   </main>
-  <footer>
-    <div>Todo los Derechos Reservados {{~CURRENT_YEAR}} &copy;</div>
+  <footer class="main-footer" id="contacto">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4>{{SITE_TITLE}}</h4>
+        <p>Especialistas en modelismo y coleccionables</p>
+        <p>Tegucigalpa, Honduras</p>
+      </div>
+
+      <div class="footer-section">
+        <h4>Contacto</h4>
+        <p><i class="fas fa-phone"></i> ‪+504 3154-8419‬</p>
+      </div>
+
+      <div class="footer-section">
+        <h4>Síguenos</h4>
+        <div class="social-links">
+          <a href="https://www.facebook.com/hasbun.sh/" target="_blank">
+            <i class="fab fa-facebook"></i>
+          </a>
+          <a href="https://www.instagram.com/hasbun_shop/" target="_blank">
+            <i class="fab fa-instagram"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; {{~CURRENT_YEAR}} {{SITE_TITLE}}. Todos los derechos reservados.</p>
+    </div>
   </footer>
   {{foreach EndScripts}}
   <script src="{{~BASE_DIR}}/{{this}}"></script>
   {{endfor EndScripts}}
 </body>
-</html>
+
+</html> ]

@@ -1,3 +1,4 @@
+
 INSERT INTO `roles` (
     `rolescod`,
     `rolesdsc`,
@@ -6,6 +7,22 @@ INSERT INTO `roles` (
 VALUES
     ('admin', 'administrador', 'ACT'),
     ('pbl', 'publico', 'ACT');
+
+-- Active: 1750517049055@@127.0.0.1@3306@hasbunstore
+
+INSERT INTO
+    `roles` (
+        `rolescod`,
+        `rolesdsc`,
+        `rolesest`
+    )
+VALUES (
+        'admin',
+        'administrador',
+        'ACT'
+    ),
+    ('pbl', 'publico', 'ACT')
+
 
 
 
