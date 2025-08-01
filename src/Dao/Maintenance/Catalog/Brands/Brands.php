@@ -6,71 +6,83 @@ use Dao\Table;
 class Brands extends Table
 {
     public static function getBrands(
-        string $partialName = "",
-        string $status = "",
-        string $orderBy = "",
-        bool $orderDescending = false,
-        int $page = 0,
-        int $itemsPerPage = 10
-    ) {
-        $sqlstr = "SELECT 
-            brandId, 
-            brandName, 
-            brandDescription, 
-            brandStatus,
-            CASE 
-                WHEN brandStatus = 'ACT' THEN 'Active'
-                WHEN brandStatus = 'INA' THEN 'Inactive'
-                ELSE 'Unknown'
-            END as brandStatusDsc
-        FROM brands";
+    string $partialName = "",
+    string $status = "",
+    string $orderBy = "",
+    bool $orderDescending = false,
+    int $page = 0,
+    int $itemsPerPage = 10
+) {
+    $page = max(0, $page);
+    $itemsPerPage = max(1, $itemsPerPage);
 
-        $sqlstrCount = "SELECT COUNT(*) as count FROM brands";
-        $conditions = [];
-        $params = [];
+    $sqlstr = "SELECT 
+        brandId, 
+        brandName, 
+        brandDescription, 
+        brandStatus,
+        CASE 
+            WHEN brandStatus = 'ACT' THEN 'Active'
+            WHEN brandStatus = 'INA' THEN 'Inactive'
+            ELSE 'Unknown'
+        END as brandStatusDsc
+    FROM brands";
 
-        if ($partialName != "") {
-            $conditions[] = "brandName LIKE :partialName";
-            $params["partialName"] = "%" . $partialName . "%";
-        }
+    $sqlstrCount = "SELECT COUNT(*) as count FROM brands";
+    $conditions = [];
+    $params = [];
 
-        if (!in_array($status, ["ACT", "INA", ""])) {
-            throw new \Exception("Error Processing Request Status has invalid value");
-        }
-
-        if ($status != "") {
-            $conditions[] = "brandStatus = :status";
-            $params["status"] = $status;
-        }
-
-        if (count($conditions) > 0) {
-            $sqlstr .= " WHERE " . implode(" AND ", $conditions);
-            $sqlstrCount .= " WHERE " . implode(" AND ", $conditions);
-        }
-
-        if (!in_array($orderBy, ["brandId", "brandName", ""])) {
-            throw new \Exception("Error Processing Request OrderBy has invalid value");
-        }
-
-        if ($orderBy != "") {
-            $sqlstr .= " ORDER BY " . $orderBy;
-            if ($orderDescending) {
-                $sqlstr .= " DESC";
-            }
-        }
-
-        $numeroDeRegistros = self::obtenerUnRegistro($sqlstrCount, $params)["count"];
-        $pagesCount = ceil($numeroDeRegistros / $itemsPerPage);
-
-        if ($page > $pagesCount - 1) {
-            $page = $pagesCount - 1;
-        }
-
-        $sqlstr .= " LIMIT " . $page * $itemsPerPage . ", " . $itemsPerPage;
-
-        $registros = self::obtenerRegistros($sqlstr, $params);
-        return ["brands" => $registros, "total" => $numeroDeRegistros, "page" => $page, "itemsPerPage" => $itemsPerPage];
+    if ($partialName != "") {
+        $conditions[] = "brandName LIKE :partialName";
+        $params["partialName"] = "%" . $partialName . "%";
     }
+
+    if (!in_array($status, ["ACT", "INA", ""])) {
+        throw new \Exception("Error Processing Request Status has invalid value");
+    }
+
+    if ($status != "") {
+        $conditions[] = "brandStatus = :status";
+        $params["status"] = $status;
+    }
+
+    if (count($conditions) > 0) {
+        $whereClause = " WHERE " . implode(" AND ", $conditions);
+        $sqlstr .= $whereClause;
+        $sqlstrCount .= $whereClause;
+    }
+
+    if (!in_array($orderBy, ["brandId", "brandName", ""])) {
+        throw new \Exception("Error Processing Request OrderBy has invalid value");
+    }
+
+    if ($orderBy != "") {
+        $sqlstr .= " ORDER BY " . $orderBy;
+        if ($orderDescending) {
+            $sqlstr .= " DESC";
+        }
+    }
+
+    $numeroDeRegistros = self::obtenerUnRegistro($sqlstrCount, $params)["count"];
+    $pagesCount = ceil($numeroDeRegistros / $itemsPerPage);
+
+    if ($page > max(0, $pagesCount - 1)) {
+        $page = max(0, $pagesCount - 1);
+    }
+
+    $offset = $page * $itemsPerPage;
+    $sqlstr .= " LIMIT $offset, $itemsPerPage";
+
+    $registros = self::obtenerRegistros($sqlstr, $params);
+
+    return [
+        "brands" => $registros,
+        "total" => $numeroDeRegistros,
+        "page" => $page,
+        "itemsPerPage" => $itemsPerPage
+    ];
+}
+
 
     public static function getBrandById(int $brandId)
     {

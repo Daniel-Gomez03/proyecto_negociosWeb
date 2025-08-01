@@ -5,74 +5,83 @@
     use Dao\Table;
 
     class Funciones extends Table {
-        public static function getFunciones(
-            string $partialDescription = "",
-            string $status = "",
-            string $type = "",
-            string $orderBy = "",
-            bool $orderDescending = false,
-            int $page = 0,
-            int $itemsPerPage = 10
-        ): array {
-            $sqlstr = "SELECT fncod, fndsc, fnest, fntyp,
-                            CASE fnest
-                                WHEN 'ACT' THEN 'Activo'
-                                WHEN 'INA' THEN 'Inactivo'
-                                ELSE 'Sin Asignar'
-                            END AS fnestDsc
-                        FROM funciones";
-            $sqlstrCount = "SELECT COUNT(*) AS count FROM funciones";
-            $conditions = [];
-            $params = [];
+       public static function getFunciones(
+    string $partialDescription = "",
+    string $status = "",
+    string $type = "",
+    string $orderBy = "",
+    bool $orderDescending = false,
+    int $page = 0,
+    int $itemsPerPage = 10
+): array {
+    $page = max(0, $page);
+    $itemsPerPage = max(1, $itemsPerPage);
 
-            if ($partialDescription !== "") {
-                $conditions[] = "fndsc LIKE :partialDescription";
-                $params["partialDescription"] = "%" . $partialDescription . "%";
-            }
+    $sqlstr = "SELECT fncod, fndsc, fnest, fntyp,
+                    CASE fnest
+                        WHEN 'ACT' THEN 'Activo'
+                        WHEN 'INA' THEN 'Inactivo'
+                        ELSE 'Sin Asignar'
+                    END AS fnestDsc
+               FROM funciones";
 
-            if (!in_array($status, ["ACT", "INA", ""])) {
-                throw new \Exception("Error Processing Request: Status has invalid value");
-            }
-            if ($status !== "") {
-                $conditions[] = "fnest = :status";
-                $params["status"] = $status;
-            }
+    $sqlstrCount = "SELECT COUNT(*) AS count FROM funciones";
+    $conditions = [];
+    $params = [];
 
-            if ($type !== "") {
-                $conditions[] = "fntyp = :type";
-                $params["type"] = $type;
-            }
+    if ($partialDescription !== "") {
+        $conditions[] = "fndsc LIKE :partialDescription";
+        $params["partialDescription"] = "%" . $partialDescription . "%";
+    }
 
-            if (!empty($conditions)) {
-                $sqlstr .= " WHERE " . implode(" AND ", $conditions);
-                $sqlstrCount .= " WHERE " . implode(" AND ", $conditions);
-            }
+    if (!in_array($status, ["ACT", "INA", ""])) {
+        throw new \Exception("Error Processing Request: Status has invalid value");
+    }
+    if ($status !== "") {
+        $conditions[] = "fnest = :status";
+        $params["status"] = $status;
+    }
 
-            if (!in_array($orderBy, ["fncod", "fndsc", "fnest", "fntyp", ""])) {
-                throw new \Exception("Error Processing Request: OrderBy has invalid value");
-            }
-            if ($orderBy !== "") {
-                $sqlstr .= " ORDER BY " . $orderBy;
-                if ($orderDescending) {
-                    $sqlstr .= " DESC";
-                }
-            }
+    if ($type !== "") {
+        $conditions[] = "fntyp = :type";
+        $params["type"] = $type;
+    }
 
-            $numeroDeRegistros = self::obtenerUnRegistro($sqlstrCount, $params)["count"];
-            $pagesCount = ceil($numeroDeRegistros / $itemsPerPage);
-            if ($page > $pagesCount - 1) {
-                $page = $pagesCount - 1;
-            }
+    if (!empty($conditions)) {
+        $whereClause = " WHERE " . implode(" AND ", $conditions);
+        $sqlstr .= $whereClause;
+        $sqlstrCount .= $whereClause;
+    }
 
-            $sqlstr .= " LIMIT " . $page * $itemsPerPage . ", " . $itemsPerPage;
-            $registros = self::obtenerRegistros($sqlstr, $params);
-            return [
-                "funciones" => $registros,
-                "total" => $numeroDeRegistros,
-                "page" => $page,
-                "itemsPerPage" => $itemsPerPage
-            ];
+    if (!in_array($orderBy, ["fncod", "fndsc", "fnest", "fntyp", ""])) {
+        throw new \Exception("Error Processing Request: OrderBy has invalid value");
+    }
+    if ($orderBy !== "") {
+        $sqlstr .= " ORDER BY " . $orderBy;
+        if ($orderDescending) {
+            $sqlstr .= " DESC";
         }
+    }
+
+    $numeroDeRegistros = self::obtenerUnRegistro($sqlstrCount, $params)["count"];
+    $pagesCount = ceil($numeroDeRegistros / $itemsPerPage);
+    if ($page > max(0, $pagesCount - 1)) {
+        $page = max(0, $pagesCount - 1);
+    }
+
+    $offset = $page * $itemsPerPage;
+    $sqlstr .= " LIMIT $offset, $itemsPerPage";
+
+    $registros = self::obtenerRegistros($sqlstr, $params);
+
+    return [
+        "funciones" => $registros,
+        "total" => $numeroDeRegistros,
+        "page" => $page,
+        "itemsPerPage" => $itemsPerPage
+    ];
+}
+
 
         public static function getFuncionById(string $fncod) {
             $sqlstr = "SELECT * FROM funciones WHERE fncod = :fncod;";

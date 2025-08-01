@@ -1,11 +1,6 @@
 <?php
 namespace Dao\Security;
 
-if (version_compare(phpversion(), '7.4.0', '<')) {
-        define('PASSWORD_ALGORITHM', 1);  //BCRYPT
-} else {
-    define('PASSWORD_ALGORITHM', '2y');  //BCRYPT
-}
 /*
 usercod     bigint(10) AI PK
 useremail   varchar(80)
@@ -25,6 +20,13 @@ use Exception;
 
 class Security extends \Dao\Table
 {
+     public static function getUserByEmail(string $email)
+{
+    $sqlstr = "SELECT * FROM usuario WHERE useremail = :email";
+    $params = ["email" => $email];
+    return self::executeQueryOne($sqlstr, $params); // Retorna un usuario o null
+}
+
     static public function getUsuarios($filter = "", $page = -1, $items = 0)
     {
         $sqlstr = "";
@@ -91,13 +93,21 @@ class Security extends \Dao\Table
 
     }
 
-    static public function getUsuarioByEmail($email)
+ static public function getEmail($useremail)
+    {
+        $sqlstr = "SELECT * from usuario where useremail=:useremail;";
+        $featuresList = self::obtenerRegistros($sqlstr, array("useremail"=>$useremail));
+        return count($featuresList) > 0;
+    }
+
+ static public function getUsuarioByEmail($email)
     {
         $sqlstr = "SELECT * from `usuario` where `useremail` = :useremail ;";
         $params = array("useremail"=>$email);
 
         return self::obtenerUnRegistro($sqlstr, $params);
     }
+
 
     /*static private function _saltPassword($password)
     {
@@ -143,6 +153,8 @@ class Security extends \Dao\Table
         $featuresList = self::obtenerRegistros($sqlstr, array("fncod"=>$fncod));
         return count($featuresList) > 0;
     }
+
+
 
     static public function addNewFeature($fncod, $fndsc, $fnest, $fntyp )
     {

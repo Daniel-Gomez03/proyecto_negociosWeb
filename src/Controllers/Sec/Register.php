@@ -36,6 +36,11 @@ class Register extends PublicController
                 $this->hasErrors = true;
             }
 
+            if(\Dao\Security\Security::getEmail($this->txtEmail)){
+                $this->errorEmail = "El correo ya se encuentra registrado.";
+                $this->hasErrors = true;
+            }
+
             if (!$this->hasErrors) {
                 try{
                     if (\Dao\Security\Security::newUsuario($this->txtEmail, $this->txtPswd,$this->txtUser)) {

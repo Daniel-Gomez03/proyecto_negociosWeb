@@ -6,71 +6,83 @@ use Dao\Table;
 class Categories extends Table
 {
     public static function getCategories(
-        string $partialName = "",
-        string $status = "",
-        string $orderBy = "",
-        bool $orderDescending = false,
-        int $page = 0,
-        int $itemsPerPage = 10
-    ) {
-        $sqlstr = "SELECT 
-            categoryId, 
-            categoryName, 
-            categoryDescription, 
-            categoryStatus,
-            CASE 
-                WHEN categoryStatus = 'ACT' THEN 'Active'
-                WHEN categoryStatus = 'INA' THEN 'Inactive'
-                ELSE 'Unknown'
-            END as categoryStatusDsc
-        FROM categories";
+    string $partialName = "",
+    string $status = "",
+    string $orderBy = "",
+    bool $orderDescending = false,
+    int $page = 0,
+    int $itemsPerPage = 10
+) {
+    $page = max(0, $page);
+    $itemsPerPage = max(1, $itemsPerPage);
 
-        $sqlstrCount = "SELECT COUNT(*) as count FROM categories";
-        $conditions = [];
-        $params = [];
+    $sqlstr = "SELECT 
+        categoryId, 
+        categoryName, 
+        categoryDescription, 
+        categoryStatus,
+        CASE 
+            WHEN categoryStatus = 'ACT' THEN 'Active'
+            WHEN categoryStatus = 'INA' THEN 'Inactive'
+            ELSE 'Unknown'
+        END as categoryStatusDsc
+    FROM categories";
 
-        if ($partialName != "") {
-            $conditions[] = "categoryName LIKE :partialName";
-            $params["partialName"] = "%" . $partialName . "%";
-        }
+    $sqlstrCount = "SELECT COUNT(*) as count FROM categories";
+    $conditions = [];
+    $params = [];
 
-        if (!in_array($status, ["ACT", "INA", ""])) {
-            throw new \Exception("Error Processing Request Status has invalid value");
-        }
-
-        if ($status != "") {
-            $conditions[] = "categoryStatus = :status";
-            $params["status"] = $status;
-        }
-
-        if (count($conditions) > 0) {
-            $sqlstr .= " WHERE " . implode(" AND ", $conditions);
-            $sqlstrCount .= " WHERE " . implode(" AND ", $conditions);
-        }
-
-        if (!in_array($orderBy, ["categoryId", "categoryName", ""])) {
-            throw new \Exception("Error Processing Request OrderBy has invalid value");
-        }
-
-        if ($orderBy != "") {
-            $sqlstr .= " ORDER BY " . $orderBy;
-            if ($orderDescending) {
-                $sqlstr .= " DESC";
-            }
-        }
-
-        $numeroDeRegistros = self::obtenerUnRegistro($sqlstrCount, $params)["count"];
-        $pagesCount = ceil($numeroDeRegistros / $itemsPerPage);
-
-        if ($page > $pagesCount - 1) {
-            $page = $pagesCount - 1;
-        }
-
-        $sqlstr .= " LIMIT " . $page * $itemsPerPage . ", " . $itemsPerPage;
-
-        $registros = self::obtenerRegistros($sqlstr, $params);
-        return ["categories" => $registros, "total" => $numeroDeRegistros, "page" => $page, "itemsPerPage" => $itemsPerPage];
+    if ($partialName != "") {
+        $conditions[] = "categoryName LIKE :partialName";
+        $params["partialName"] = "%" . $partialName . "%";
     }
+
+    if (!in_array($status, ["ACT", "INA", ""])) {
+        throw new \Exception("Error Processing Request Status has invalid value");
+    }
+
+    if ($status != "") {
+        $conditions[] = "categoryStatus = :status";
+        $params["status"] = $status;
+    }
+
+    if (count($conditions) > 0) {
+        $whereClause = " WHERE " . implode(" AND ", $conditions);
+        $sqlstr .= $whereClause;
+        $sqlstrCount .= $whereClause;
+    }
+
+    if (!in_array($orderBy, ["categoryId", "categoryName", ""])) {
+        throw new \Exception("Error Processing Request OrderBy has invalid value");
+    }
+
+    if ($orderBy != "") {
+        $sqlstr .= " ORDER BY " . $orderBy;
+        if ($orderDescending) {
+            $sqlstr .= " DESC";
+        }
+    }
+
+    $numeroDeRegistros = self::obtenerUnRegistro($sqlstrCount, $params)["count"];
+    $pagesCount = ceil($numeroDeRegistros / $itemsPerPage);
+
+    if ($page > max(0, $pagesCount - 1)) {
+        $page = max(0, $pagesCount - 1);
+    }
+
+    $offset = $page * $itemsPerPage;
+    $sqlstr .= " LIMIT $offset, $itemsPerPage";
+
+    $registros = self::obtenerRegistros($sqlstr, $params);
+
+    return [
+        "categories" => $registros,
+        "total" => $numeroDeRegistros,
+        "page" => $page,
+        "itemsPerPage" => $itemsPerPage
+    ];
+}
+
 
     public static function getCategoryById(int $categoryId)
     {
