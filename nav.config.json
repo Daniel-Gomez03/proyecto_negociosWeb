@@ -53,9 +53,9 @@
       "nav_label": "<i class=\"fas fa-list\"></i>&nbsp;Tabla Categorías"
     },
     {
-      "id": "User_table",
+      "id": "Menu_Maintenance_Users_Users",
       "nav_url": "index.php?page=Maintenance_Users_Users",
-      "nav_label": "<i class=\"fas fa-sign-in-alt\"></i>&nbsp;Tabla User"
+      "nav_label": "Usuarios"
     }
   ]
 }
