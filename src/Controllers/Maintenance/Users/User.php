@@ -171,7 +171,7 @@
                     if (empty($this->user["userpswd"])) {
                     throw new \Exception("Debe ingresar una nueva contraseña.");
                     }
-                    $this->user["userpswd"] = password_hash($this->user["userpswd"], PASSWORD_BCRYPT);
+                    
                     $result = UsersDao::updateUser(
                         $this->user["usercod"],
                         $this->user["useremail"],

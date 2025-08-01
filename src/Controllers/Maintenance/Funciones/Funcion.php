@@ -19,10 +19,12 @@ class Funcion extends PublicController {
     private $readonly = "";
     private $showCommitBtn = true;
     private $funcion = [
-        "funcod" => "",
-        "funcdsc" => "",
-        "funcest" => "ACT"
-    ];
+    "fncod" => "",
+    "fndsc" => "",
+    "fnest" => "ACT",
+    "fntyp" => ""
+];
+
     private $funcion_xss_token = "";
 
     public function run(): void {
@@ -60,47 +62,50 @@ class Funcion extends PublicController {
     }
 
     private function validateData() {
-        $errors = [];
-        $this->funcion_xss_token = $_POST["funcion_xss_token"] ?? "";
-        $this->funcion["funcod"] = trim($_POST["funcod"] ?? "");
-        $this->funcion["funcdsc"] = trim($_POST["funcdsc"] ?? "");
-        $this->funcion["funcest"] = trim($_POST["funcest"] ?? "ACT");
+    $errors = [];
+    $this->funcion_xss_token = $_POST["funcion_xss_token"] ?? "";
+    $this->funcion["fncod"] = trim($_POST["fncod"] ?? "");
+    $this->funcion["fndsc"] = trim($_POST["fndsc"] ?? "");
+    $this->funcion["fnest"] = trim($_POST["fnest"] ?? "ACT");
+    $this->funcion["fntyp"] = trim($_POST["fntyp"] ?? "");
 
-        if (Validators::IsEmpty($this->funcion["funcod"])) {
-            $errors["funcod_error"] = "El código de la función es requerido";
-        }
-
-        if (Validators::IsEmpty($this->funcion["funcdsc"])) {
-            $errors["funcdsc_error"] = "La descripción es requerida";
-        }
-
-        if (!in_array($this->funcion["funcest"], ["ACT", "INA"])) {
-            $errors["funcest_error"] = "El estado de la función es inválido";
-        }
-
-        if (count($errors) > 0) {
-            foreach ($errors as $key => $value) {
-                $this->funcion[$key] = $value;
-            }
-            return false;
-        }
-        return true;
+    if (Validators::IsEmpty($this->funcion["fncod"])) {
+        $errors["fncod_error"] = "El código de la función es requerido";
     }
+
+    if (Validators::IsEmpty($this->funcion["fndsc"])) {
+        $errors["fndsc_error"] = "La descripción es requerida";
+    }
+
+    if (!in_array($this->funcion["fnest"], ["ACT", "INA"])) {
+        $errors["fnest_error"] = "El estado de la función es inválido";
+    }
+
+    if (count($errors) > 0) {
+        foreach ($errors as $key => $value) {
+            $this->funcion[$key] = $value;
+        }
+        return false;
+    }
+    return true;
+}
+
 
 
     private function setViewData(): void {
         $this->viewData["mode"] = $this->mode;
         $this->viewData["funcion_xss_token"] = $this->funcion_xss_token;
-        $this->viewData["FormTitle"] = sprintf(
-            $this->modeDescriptions[$this->mode],
-            $this->funcion["funcdsc"] = $_POST["funcdsc"] ?? "",
-            $this->funcion["funcest"] = $_POST["funcest"] ?? ""
-        );
+      $this->viewData["FormTitle"] = sprintf(
+    $this->modeDescriptions[$this->mode],
+    $this->funcion["fndsc"] ?? "",
+    $this->funcion["fnest"] ?? ""
+);
         $this->viewData["showCommitBtn"] = $this->showCommitBtn;
         $this->viewData["readonly"] = $this->readonly;
 
-        $statusKey = "funcest_" . strtolower($this->funcion["funcest"]);
-        $this->funcion[$statusKey] = "selected";
+        $statusKey = "fnest_" . strtolower($this->funcion["fnest"]);
+$this->funcion[$statusKey] = "selected";
+
 
         $this->viewData["funcion"] = $this->funcion;
     }
@@ -108,54 +113,49 @@ class Funcion extends PublicController {
 
 
 
-    private function handlePostAction(){
-            switch($this->mode){
-                case "INS":
-                  $result = FuncionesDao::insertFuncion(
-            $this->funcion["funcod"],
-            $this->funcion["funcdsc"],
-            $this->funcion["funcest"],
 
-        );
-                    if (!$result) {
-                        throw new \Exception("Error al insertar la funcion", 1);
-                    }
-                    else{
-                        
-                        Site::redirectToWithMsg( "index.php?page=Maintenance_Funciones_Funciones",
-                "Función creada exitosamente");
-                    }
-                    
-                    break;
-                case "UPD":
-                    $result = FuncionesDao::updateFuncion(
-            $this->funcion["funcod"],
-            $this->funcion["funcdsc"],
-            $this->funcion["funcest"]
-        );
-        if (!$result) {
-                        throw new \Exception("Error al actualizar la funcion", 1);
-                    }
-                    else{
-                        Site::redirectToWithMsg( "index.php?page=Maintenance_Funciones_Funciones",
-                "Función creada exitosamente");
-                    }
-                    
-                    
-                    break;
-                case "DEL":
-                     $result = FuncionesDao::deleteFuncion($this->funcion["funcod"]);
-        if ($result > 0) {
-            Site::redirectToWithMsg(
-                "index.php?page=Maintenance_Funciones_Funciones",
-                "Función eliminada exitosamente"
+   private function handlePostAction(){
+    switch($this->mode){
+        case "INS":
+            $result = FuncionesDao::insertFuncion(
+                $this->funcion["fncod"],
+                $this->funcion["fndsc"],
+                $this->funcion["fnest"],
+                $this->funcion["fntyp"]
             );
+            if (!$result) {
+                throw new \Exception("Error al insertar la función");
             }
-                    
-                    break;
-                default:
-                    throw new \Exception("Modo inválido", 1);
+            Site::redirectToWithMsg("index.php?page=Maintenance_Funciones_Funciones", "Función creada exitosamente");
+            break;
+
+        case "UPD":
+            $result = FuncionesDao::updateFuncion(
+                $this->funcion["fncod"],
+                $this->funcion["fndsc"],
+                $this->funcion["fnest"],
+                $this->funcion["fntyp"]
+            );
+            if (!$result) {
+                throw new \Exception("Error al actualizar la función");
             }
-        }
+            Site::redirectToWithMsg("index.php?page=Maintenance_Funciones_Funciones", "Función actualizada exitosamente");
+            break;
+
+        case "DEL":
+            $result = FuncionesDao::deleteFuncion($this->funcion["fncod"]);
+            if ($result > 0) {
+                Site::redirectToWithMsg("index.php?page=Maintenance_Funciones_Funciones", "Función eliminada exitosamente");
+            } else {
+                throw new \Exception("Error al eliminar la función");
+            }
+            break;
+
+        default:
+            throw new \Exception("Modo inválido");
+    }
+}
+
+
     
 }
