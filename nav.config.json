@@ -58,6 +58,11 @@
       "nav_label": "Administración de Funciones"
     },
     {
+      "id": "Menu_Maintenance_Catalog_Products_Products",
+      "nav_url": "index.php?page=Maintenance_Catalog_Products_Products",
+      "nav_label": "Administración de Productos"
+    },
+    {
       "id": "Menu_Maintenance_Catalog_Categories_Categories",
       "nav_url": "index.php?page=Maintenance_Catalog_Categories_Categories",
       "nav_label": "Administración de Categorías"
