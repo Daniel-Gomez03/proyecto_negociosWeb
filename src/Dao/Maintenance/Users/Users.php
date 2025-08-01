@@ -4,11 +4,7 @@
 
     use Dao\Table;
 
-    if (version_compare(phpversion(), '7.4.0', '<')) {
-        define('PASSWORD_ALGORITHM', 1);  // BCRYPT
-    } else {
-        define('PASSWORD_ALGORITHM', '2y');  // BCRYPT
-    }
+    
 
     class Users extends Table
     {
@@ -139,38 +135,48 @@
 
         // Actualizar usuario
         public static function updateUser(
-            int $usercod,
-            string $useremail,
-            string $username,
-            string $userpswd,
-            string $userest,
-            string $usertipo
-        ) {
-            $sqlstr = "UPDATE usuario SET 
-                        useremail = :useremail,
-                        username = :username,
-                        userest = :userest,
-                        usertipo = :usertipo";
+    int $usercod,
+    string $useremail,
+    string $username,
+    string $userpswd,
+    string $userest,
+    string $usertipo
+) {
+    $hashedPassword = self::_hashPassword($userpswd); 
 
-            $params = [
-                "usercod"   => $usercod,
-                "useremail" => $useremail,
-                "username"  => $username,
-                "userest"   => $userest,
-                "usertipo"  => $usertipo
-            ];
+   
+    $userpswdest = "ACT";
+    $userpswdexp = date('Y-m-d', time() + 7776000); 
+    $useractcod = hash("sha256", $useremail . time());
+    $userpswdchg = date('Y-m-d H:i:s'); 
+    $sqlstr = "UPDATE usuario SET 
+                useremail = :useremail,
+                username = :username,
+                userest = :userest,
+                usertipo = :usertipo,
+                userpswd = :userpswd,
+                userpswdest = :userpswdest,
+                userpswdexp = :userpswdexp,
+                useractcod = :useractcod,
+                userpswdchg = :userpswdchg
+               WHERE usercod = :usercod";
 
-            // Solo actualizar contraseña si se envía una nueva
-            if (!empty($userpswd)) {
-                $hashedPassword = password_hash($userpswd, PASSWORD_BCRYPT);
-                $sqlstr .= ", userpswd = :userpswd";
-                $params["userpswd"] = $hashedPassword;
-            }
+    $params = [
+        "usercod"       => $usercod,
+        "useremail"     => $useremail,
+        "username"      => $username,
+        "userest"       => $userest,
+        "usertipo"      => $usertipo,
+        "userpswd"      => $hashedPassword,
+        "userpswdest"   => $userpswdest,
+        "userpswdexp"   => $userpswdexp,
+        "useractcod"    => $useractcod,
+        "userpswdchg"   => $userpswdchg
+    ];
 
-            $sqlstr .= " WHERE usercod = :usercod";
+    return self::executeNonQuery($sqlstr, $params);
+}
 
-            return self::executeNonQuery($sqlstr, $params);
-        }
 
         // Eliminar un usuario
         public static function deleteUser(int $usercod)
