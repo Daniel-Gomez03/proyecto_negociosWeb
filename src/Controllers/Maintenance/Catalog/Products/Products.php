@@ -9,36 +9,33 @@ use Views\Renderer;
 
 class Products extends PrivateController
 {
-    private $partialName = "";
-    private $status = "";
-    private $orderBy = "";
-    private $orderDescending = false;
-    private $pageNumber = 1;
-    private $itemsPerPage = 10;
+    private string $partialName = "";
+    private string $status = "";
+    private string $orderBy = "";
+    private bool $orderDescending = false;
+    private int $pageNumber = 1;
+    private int $itemsPerPage = 10;
     
-    private $products = [];
-    private $productsCount = 0;
-    private $pages = 0;
+    private array $products = [];
+    private int $productsCount = 0;
+    private int $pages = 0;
 
-    private arry $viewData;
-        public function __construct()
-        {
-            parent::__construct();
-            $this->viewData=[];
-            $this->viewData["isNewEnabled"]=parent::isFeatureAutorized($this->name . "\\new");
-            $this->viewData["isUpdateEnabled"]=parent::isFeatureAutorized($this->name . "\\update");
-            $this->viewData["isDeleteEnabled"]=parent::isFeatureAutorized($this->name . "\\delete");
-        }
-    /*
-    Public function runn(): void{
-         $this->viewData["products"]= DaoProducts::getProducts();
-         Renderer::render("maintenance/catalog/products/products", $this->viewData);
-    }*/
+    private array $viewData;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->viewData = [];
+        $this->viewData["isNewEnabled"] = parent::isFeatureAutorized($this->name . "\\new");
+        $this->viewData["isUpdateEnabled"] = parent::isFeatureAutorized($this->name . "\\update");
+        $this->viewData["isDeleteEnabled"] = parent::isFeatureAutorized($this->name . "\\delete");
+    }
 
     public function run(): void
     {
         $this->getParamsFromContext();
         $this->getParams();
+        
         $tmpProducts = DaoProducts::getProducts(
             $this->partialName,
             $this->status,
@@ -47,12 +44,15 @@ class Products extends PrivateController
             $this->pageNumber - 1,
             $this->itemsPerPage
         );
+        
         $this->products = $tmpProducts["products"];
         $this->productsCount = $tmpProducts["total"];
         $this->pages = $this->productsCount > 0 ? ceil($this->productsCount / $this->itemsPerPage) : 1;
+        
         if ($this->pageNumber > $this->pages) {
             $this->pageNumber = $this->pages;
         }
+
         $this->setParamsToContext();
         $this->setParamsToDataView();
         Renderer::render("maintenance/catalog/products/products", $this->viewData);
@@ -108,7 +108,6 @@ class Products extends PrivateController
         $this->viewData["pages"] = $this->pages;
         $this->viewData["products"] = $this->products;
 
-        // Set status description for each product
         foreach ($this->viewData["products"] as &$product) {
             $product["productStatusDsc"] = $product["productStatus"] === 'ACT' ? 'Active' : 'Inactive';
         }
