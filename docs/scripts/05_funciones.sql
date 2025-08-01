@@ -1,4 +1,16 @@
-//Funciones
+Roles
+INSERT INTO
+    `roles` (
+        `rolescod`,
+        `rolesdsc`,
+        `rolesest`
+    )
+VALUES (
+        'admin',
+        'administrador',
+        'ACT'
+    ),
+    ('pbl', 'publico', 'ACT') Funciones
 
 INSERT INTO
     `funciones` (
@@ -156,9 +168,7 @@ VALUES (
         'Menu_Maintenance_Roles_Roles',
         'ACT',
         'MNU'
-    )
-
-//Funciones_Roles
+    ) Funciones_Roles
 
 INSERT INTO
     `funciones_roles` (
