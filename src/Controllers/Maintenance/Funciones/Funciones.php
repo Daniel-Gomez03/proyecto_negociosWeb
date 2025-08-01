@@ -54,11 +54,14 @@ class Funciones extends PrivateController {
         }
         $this->type = $_GET["type"] ?? $this->type;
         
-        // Se agregó 'fntyp' a la lista de campos de ordenamiento
-        $this->orderBy = (isset($_GET["orderBy"]) && in_array($_GET["orderBy"], ["fncod", "fndsc", "fnest", "fntyp", "clear"])) ? $_GET["orderBy"] : $this->orderBy;
-        if ($this->orderBy === "clear") {
+        $validOrderBy = ["fncod", "fndsc", "fnest", "fntyp"];
+        $orderByValue = $_GET["orderBy"] ?? $this->orderBy;
+        if ($orderByValue === "clear") {
             $this->orderBy = "";
+        } else if (in_array($orderByValue, $validOrderBy)) {
+            $this->orderBy = $orderByValue;
         }
+
         $this->orderDescending = isset($_GET["orderDescending"]) ? boolval($_GET["orderDescending"]) : $this->orderDescending;
         $this->pageNumber = isset($_GET["pageNum"]) ? intval($_GET["pageNum"]) : $this->pageNumber;
         $this->itemsPerPage = isset($_GET["itemsPerPage"]) ? intval($_GET["itemsPerPage"]) : $this->itemsPerPage;
@@ -100,8 +103,6 @@ class Funciones extends PrivateController {
 
         if ($this->orderBy !== "") {
             $orderByKey = "Order" . ucfirst($this->orderBy);
-            $orderByKeyNoOrder = "OrderBy" . ucfirst($this->orderBy);
-            $this->viewData[$orderByKeyNoOrder] = true;
             if ($this->orderDescending) {
                 $orderByKey .= "Desc";
             }
@@ -110,7 +111,7 @@ class Funciones extends PrivateController {
 
         $statusKey = "status_" . ($this->status === "" ? "EMP" : $this->status);
         $this->viewData[$statusKey] = "selected";
-
+        
         $pagination = Paging::getPagination(
             $funcionesCount,
             $this->itemsPerPage,
@@ -119,5 +120,18 @@ class Funciones extends PrivateController {
             "Maintenance_Funciones_Funciones"
         );
         $this->viewData["pagination"] = $pagination;
+
+        $this->viewData["OrderFncod"] = $this->orderBy === "fncod" && !$this->orderDescending;
+        $this->viewData["OrderFncodDesc"] = $this->orderBy === "fncod" && $this->orderDescending;
+        $this->viewData["OrderByFncod"] = $this->orderBy !== "fncod";
+        
+        $this->viewData["OrderFndsc"] = $this->orderBy === "fndsc" && !$this->orderDescending;
+        $this->viewData["OrderFndscDesc"] = $this->orderBy === "fndsc" && $this->orderDescending;
+        $this->viewData["OrderByFndsc"] = $this->orderBy !== "fndsc";
+        
+        // Agregado para el tipo de función (fntyp)
+        $this->viewData["OrderFntyp"] = $this->orderBy === "fntyp" && !$this->orderDescending;
+        $this->viewData["OrderFntypDesc"] = $this->orderBy === "fntyp" && $this->orderDescending;
+        $this->viewData["OrderByFntyp"] = $this->orderBy !== "fntyp";
     }
 }
