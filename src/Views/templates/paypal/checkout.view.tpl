@@ -14,7 +14,7 @@
     <div class="row border-b" style="padding: 0.5rem 1rem;align-items:center;">
       <span class="col-1">{{row}}</span>
       <span class="col-4">{{productName}}</span>
-      <span class="col-2 right">{{crrprc}}</span>
+      <span class="col-2 right">${{crrprc}}</span>
       <span class="col-3 center">
         <form action="index.php?page=checkout_checkout" method="post">
           <input type="hidden" name="productId" value="{{productId}}" />
@@ -24,13 +24,13 @@
         </form>
       </span>
       <span class="col-2 right">
-        {{subtotal}}
+        ${{subtotal}}
       </span>
     </div>
     {{endfor carretilla}}
     <div class="row" style="padding: 0.5rem 1rem;align-items:center;">
       <span class="col-3 offset-7 center">Total</span>
-      <span class="col-2 right">{{total}}</span>
+      <span class="col-2 right">${{total}}</span>
     </div>
     <div class="row">
       <form action="index.php?page=checkout_checkout" method="post" class="col-12 right">

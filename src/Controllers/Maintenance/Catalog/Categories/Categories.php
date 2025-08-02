@@ -20,8 +20,13 @@ class Categories extends PrivateController
     private $categoriesCount = 0;
     private $pages = 0;
 
+     public function __construct()
+    {
+        parent::__construct();
+    }
     public function run(): void
     {
+
         $this->getParamsFromContext();
         $this->getParams();
         $tmpCategories = DaoCategories::getCategories(

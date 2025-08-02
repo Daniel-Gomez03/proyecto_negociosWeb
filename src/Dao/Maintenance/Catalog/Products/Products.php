@@ -5,86 +5,74 @@ use Dao\Table;
 class Products extends Table
 {
     public static function getProducts(
-    string $partialName = "",
-    string $status = "",
-    string $orderBy = "",
-    bool $orderDescending = false,
-    int $page = 0,
-    int $itemsPerPage = 10
-) {
-    $page = max(0, $page);
-    $itemsPerPage = max(1, $itemsPerPage);
+        string $partialName = "",
+        string $status = "",
+        string $orderBy = "",
+        bool $orderDescending = false,
+        int $page = 0,
+        int $itemsPerPage = 10
+    ) {
+        $sqlstr = "SELECT 
+            p.productId,
+            p.productName,
+            p.productDescription,
+            p.productDetails,
+            p.productPrice,
+            p.productImgUrl,
+            p.productStock,
+            p.productStatus,
+            b.brandName,
+            c.categoryName
+        FROM products p
+        INNER JOIN brands b ON p.productBrandId = b.brandId
+        INNER JOIN categories c ON p.productCategoryId = c.categoryId";
+        
+        $sqlstrCount = "SELECT COUNT(*) as count FROM products p";
+        $conditions = [];
+        $params = [];
 
-    $sqlstr = "SELECT 
-        p.productId,
-        p.productName,
-        p.productDescription,
-        p.productDetails,
-        p.productPrice,
-        p.productImgUrl,
-        p.productStock,
-        p.productStatus,
-        b.brandName,
-        c.categoryName
-    FROM products p
-    INNER JOIN brands b ON p.productBrandId = b.brandId
-    INNER JOIN categories c ON p.productCategoryId = c.categoryId";
-
-    $sqlstrCount = "SELECT COUNT(*) as count FROM products p";
-    $conditions = [];
-    $params = [];
-
-    if ($partialName != "") {
-        $conditions[] = "p.productName LIKE :partialName";
-        $params["partialName"] = "%" . $partialName . "%";
-    }
-
-    if (!in_array($status, ["ACT", "INA", ""])) {
-        throw new \Exception("Error Processing Request Status has invalid value");
-    }
-
-    if ($status != "") {
-        $conditions[] = "p.productStatus = :status";
-        $params["status"] = $status;
-    }
-
-    if (count($conditions) > 0) {
-        $whereClause = " WHERE " . implode(" AND ", $conditions);
-        $sqlstr .= $whereClause;
-        $sqlstrCount .= $whereClause;
-    }
-
-    if (!in_array($orderBy, ["productId", "productName", "productPrice", ""])) {
-        throw new \Exception("Error Processing Request OrderBy has invalid value");
-    }
-
-    if ($orderBy != "") {
-        $sqlstr .= " ORDER BY " . $orderBy;
-        if ($orderDescending) {
-            $sqlstr .= " DESC";
+        if ($partialName != "") {
+            $conditions[] = "p.productName LIKE :partialName";
+            $params["partialName"] = "%" . $partialName . "%";
         }
+
+        if (!in_array($status, ["ACT", "INA", ""])) {
+            throw new \Exception("Error Processing Request Status has invalid value");
+        }
+
+        if ($status != "") {
+            $conditions[] = "p.productStatus = :status";
+            $params["status"] = $status;
+        }
+
+        if (count($conditions) > 0) {
+            $sqlstr .= " WHERE " . implode(" AND ", $conditions);
+            $sqlstrCount .= " WHERE " . implode(" AND ", $conditions);
+        }
+
+        if (!in_array($orderBy, ["productId", "productName", "productPrice", ""])) {
+            throw new \Exception("Error Processing Request OrderBy has invalid value");
+        }
+
+        if ($orderBy != "") {
+            $sqlstr .= " ORDER BY " . $orderBy;
+            if ($orderDescending) {
+                $sqlstr .= " DESC";
+            }
+        }
+
+        $numeroDeRegistros = self::obtenerUnRegistro($sqlstrCount, $params)["count"];
+        $pagesCount = ceil($numeroDeRegistros / $itemsPerPage);
+
+        if ($page > $pagesCount - 1) {
+            $page = $pagesCount - 1;
+        }
+
+        $sqlstr .= " LIMIT " . $page * $itemsPerPage . ", " . $itemsPerPage;
+
+        $registros = self::obtenerRegistros($sqlstr, $params);
+        return ["products" => $registros, "total" => $numeroDeRegistros, "page" => $page, "itemsPerPage" => $itemsPerPage];
     }
-
-    $numeroDeRegistros = self::obtenerUnRegistro($sqlstrCount, $params)["count"];
-    $pagesCount = ceil($numeroDeRegistros / $itemsPerPage);
-
-    if ($page > max(0, $pagesCount - 1)) {
-        $page = max(0, $pagesCount - 1);
-    }
-
-    $offset = $page * $itemsPerPage;
-    $sqlstr .= " LIMIT $offset, $itemsPerPage";
-
-    $registros = self::obtenerRegistros($sqlstr, $params);
-
-    return [
-        "products" => $registros,
-        "total" => $numeroDeRegistros,
-        "page" => $page,
-        "itemsPerPage" => $itemsPerPage
-    ];
-}
-
 
     public static function getProductById(int $productId)
     {
@@ -203,52 +191,5 @@ class Products extends Table
         $sqlstr = "DELETE FROM products WHERE productId = :productId";
         $params = ["productId" => $productId];
         return self::executeNonQuery($sqlstr, $params);
-    }
-
-    public static function getFeaturedProducts()
-    {
-        $sqlstr = "SELECT 
-            p.productId, 
-            p.productName, 
-            p.productDescription, 
-            p.productDetails,
-            p.productPrice,
-            p.productStock,
-            p.productImgUrl, 
-            p.productStatus,
-            b.brandName,
-            c.categoryName
-        FROM products p 
-        INNER JOIN brands b ON p.productBrandId = b.brandId
-        INNER JOIN categories c ON p.productCategoryId = c.categoryId
-        INNER JOIN highlights h ON p.productId = h.productId 
-        WHERE h.highLightStart <= NOW() AND h.highLightEnd >= NOW()";
-        
-        $params = [];
-        return self::obtenerRegistros($sqlstr, $params);
-    }
-
-    public static function getNewProducts()
-    {
-        $sqlstr = "SELECT 
-            p.productId, 
-            p.productName, 
-            p.productDescription, 
-            p.productDetails,
-            p.productPrice,
-            p.productStock,
-            p.productImgUrl, 
-            p.productStatus,
-            b.brandName,
-            c.categoryName
-        FROM products p 
-        INNER JOIN brands b ON p.productBrandId = b.brandId
-        INNER JOIN categories c ON p.productCategoryId = c.categoryId
-        WHERE p.productStatus = 'ACT' 
-        ORDER BY p.productId DESC 
-        LIMIT 3";
-        
-        $params = [];
-        return self::obtenerRegistros($sqlstr, $params);
     }
 }

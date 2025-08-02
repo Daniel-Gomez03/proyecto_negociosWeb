@@ -5,10 +5,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{SITE_TITLE}}</title>
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{BASE_DIR}}/public/css/appstyle.css" />
   <script src="https://kit.fontawesome.com/{{FONT_AWESOME_KIT}}.js" crossorigin="anonymous"></script>
+
   {{foreach SiteLinks}}
   <link rel="stylesheet" href="{{~BASE_DIR}}/{{this}}" />
   {{endfor SiteLinks}}
@@ -18,24 +20,33 @@
 </head>
 
 <body>
-  <header>
+  <header class="main-header">
     <input type="checkbox" class="menu_toggle" id="menu_toggle" />
     <label for="menu_toggle" class="menu_toggle_icon">
       <div class="hmb dgn pt-1"></div>
       <div class="hmb hrz"></div>
       <div class="hmb dgn pt-2"></div>
     </label>
-    <h1>{{SITE_TITLE}}</h1>
+    <div class="site-title">
+      <a href="index.php?page=Index">{{SITE_TITLE}}</a>
+    </div>
+
     <nav id="menu">
       <ul>
-        <li><a href="index.php?page={{PUBLIC_DEFAULT_CONTROLLER}}"><i class="fas fa-home"></i>&nbsp;Inicio</a>
-        </li>
+        <li><a href="index.php?page={{PUBLIC_DEFAULT_CONTROLLER}}"><i class="fas fa-home"></i>Inicio</a></li>
         {{foreach PUBLIC_NAVIGATION}}
         <li><a href="{{nav_url}}">{{nav_label}}</a></li>
         {{endfor PUBLIC_NAVIGATION}}
       </ul>
     </nav>
-    <span>{{if ~CART_ITEMS}}<i class="fa-solid fa-cart-shopping"></i>{{~CART_ITEMS}}{{endif ~CART_ITEMS}}</span>
+
+    <div class="header-actions">
+      <span >
+        {{if ~CART_ITEMS}}
+        <i class="fa-solid fa-cart-shopping"></i>{{~CART_ITEMS}}
+        {{endif ~CART_ITEMS}}
+      </span>
+    </div>
   </header>
   <main>
     {{{page_content}}}
@@ -50,8 +61,7 @@
 
       <div class="footer-section">
         <h4>Contacto</h4>
-        <p><i class="fas fa-envelope"></i> info@hasbunshop.com</p>
-        <p><i class="fas fa-phone"></i> +504 9999-9999</p>
+        <p><i class="fas fa-phone"></i> +504 3154-8419</p>
       </div>
 
       <div class="footer-section">
@@ -65,10 +75,9 @@
           </a>
         </div>
       </div>
-    </div>
-
-    <div class="footer-bottom">
-      <p>&copy; {{~CURRENT_YEAR}} {{SITE_TITLE}}. Todos los derechos reservados.</p>
+      <div class="footer-bottom">
+        <p>&copy; {{~CURRENT_YEAR}} {{SITE_TITLE}}. Todos los derechos reservados.</p>
+      </div>
     </div>
   </footer>
   {{foreach EndScripts}}

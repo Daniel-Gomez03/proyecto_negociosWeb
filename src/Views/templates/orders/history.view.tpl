@@ -18,7 +18,7 @@
                 <tr>
                     <td>{{order_id}}</td>
                     <td>{{formatted_date}}</td>
-                    <td>{{formatted_total}}</td>
+                    <td>${{formatted_total}}</td>
                     <td>{{status_display}}</td>
                     <td>
                         <a href="index.php?page=Orders_Detail&id={{order_id}}" class="btn-view-details">

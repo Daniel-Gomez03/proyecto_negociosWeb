@@ -1,8 +1,6 @@
 <?php
-
 namespace Controllers;
 
-use \Dao\Maintenance\Catalog\Products\Products as ProductsDao;
 use \Dao\Cart\Cart;
 use \Views\Renderer as Renderer;
 use \Utilities\Site as Site;
@@ -13,19 +11,45 @@ class Index extends PublicController
 {
     public function run(): void
     {
-        Site::addLink("public/css/products.css");
-        
+
         if ($this->isPostBack()) {
             $this->handleCartActions();
         }
-        
-        $viewData = [];
-        $viewData["productsHighlighted"] = ProductsDao::getFeaturedProducts();
-        $viewData["productsNew"] = ProductsDao::getNewProducts();
 
+        $viewData = [];
+
+        if (Security::isLogged()) {
+            $viewData["catalogUrl"] = "index.php?page=Checkout_Catalogo";
+        } else {
+            $viewData["catalogUrl"] = "index.php?page=Catalogo";
+        }
+
+        $carretillaUsuario = [];
+        if (Security::isLogged()) {
+            $carretillaUsuario = Cart::getAuthCart(Security::getUserId());
+        } else {
+            $cartAnonCod = CartFns::getAnnonCartCode();
+            $carretillaUsuario = Cart::getAnonCart($cartAnonCod);
+        }
+
+        $carretillaAssoc = [];
+        foreach ($carretillaUsuario as $item) {
+            $carretillaAssoc[$item["productId"]] = $item;
+        }
+
+        $mapFunction = function ($producto) use ($carretillaAssoc) {
+            $producto['enCarretilla'] = isset($carretillaAssoc[$producto['productId']]);
+            return $producto;
+        };
+
+        $viewData["productsHighlighted"] = array_map($mapFunction, Cart::getFeaturedProducts());
+        $viewData["productsNew"] = array_map($mapFunction, Cart::getNewProducts());
+
+        $viewData["formAction"] = "index.php?page=index";
+        
         Renderer::render("index", $viewData);
     }
-    
+
     private function handleCartActions(): void
     {
         if (!isset($_POST["productId"])) {
@@ -34,7 +58,7 @@ class Index extends PublicController
 
         $productId = intval($_POST["productId"]);
         $product = Cart::getProductoDisponible($productId);
-        
+
         if (!$product || $product["productStock"] <= 0) {
             return;
         }
@@ -46,7 +70,7 @@ class Index extends PublicController
         } else {
             $this->addToAnonCart($productId, $price);
         }
-        
+
         Site::redirectTo("index.php?page=index");
     }
 

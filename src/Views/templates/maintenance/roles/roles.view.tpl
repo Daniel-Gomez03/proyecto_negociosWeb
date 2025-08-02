@@ -5,8 +5,8 @@
             <div class="flex align-center">
                 <div class="col-8 row">
                     <input type="hidden" name="page" value="Maintenance_Roles_Roles">
-                    <label class="col-3" for="partialDesc">Código o Descripción</label>
-                    <input class="col-9" type="text" name="partialDesc" id="partialDesc" value="{{partialDesc}}" />
+                    <label class="col-3" for="partialCode">Código</label>
+                    <input class="col-9" type="text" name="partialCode" id="partialCode" value="{{partialCode}}" />
                     <label class="col-3" for="status">Estado</label>
                     <select class="col-9" name="status" id="status">
                         <option value="EMP" {{status_EMP}}>Todos</option>
@@ -21,53 +21,55 @@
         </form>
     </div>
 </section>
-
 <section class="WWList">
     <table>
         <thead>
             <tr>
-                <th class="left">Código
+                <th>
+                    Código
                     {{ifnot OrderByRolescod}}
-                    <a href="index.php?page=Maintenance_Roles_Roles&orderBy=rolescod&orderDescending=0">Código<i
-                            class="fas fa-sort"></i></a>
+                        <a href="index.php?page=Maintenance_Roles_Roles&orderBy=rolescod&orderDescending=0">Código <i class="fas fa-sort"></i></a>
                     {{endifnot OrderByRolescod}}
                     {{if OrderRolescodDesc}}
-                    <a href="index.php?page=Maintenance_Roles_Roles&orderBy=clear&orderDescending=0">Código<i
-                            class="fas fa-sort-down"></i></a>
+                        <a href="index.php?page=Maintenance_Roles_Roles&orderBy=clear&orderDescending=0">Código <i class="fas fa-sort-down"></i></a>
                     {{endif OrderRolescodDesc}}
                     {{if OrderRolescod}}
-                    <a href="index.php?page=Maintenance_Roles_Roles&orderBy=rolescod&orderDescending=1">Código<i
-                            class="fas fa-sort-up"></i></a>
+                        <a href="index.php?page=Maintenance_Roles_Roles&orderBy=rolescod&orderDescending=1">Código <i class="fas fa-sort-up"></i></a>
                     {{endif OrderRolescod}}
                 </th>
-                <th class="left">Descripción
+                <th class="left">
+                    Descripción
                     {{ifnot OrderByRolesdsc}}
-                    <a href="index.php?page=Maintenance_Roles_Roles&orderBy=rolesdsc&orderDescending=0">Descripción<i
-                            class="fas fa-sort"></i></a>
+                        <a href="index.php?page=Maintenance_Roles_Roles&orderBy=rolesdsc&orderDescending=0">Descripción <i class="fas fa-sort"></i></a>
                     {{endifnot OrderByRolesdsc}}
                     {{if OrderRolesdscDesc}}
-                    <a href="index.php?page=Maintenance_Roles_Roles&orderBy=clear&orderDescending=0">Descripción<i
-                            class="fas fa-sort-down"></i></a>
+                        <a href="index.php?page=Maintenance_Roles_Roles&orderBy=clear&orderDescending=0">Descripción <i class="fas fa-sort-down"></i></a>
                     {{endif OrderRolesdscDesc}}
                     {{if OrderRolesdsc}}
-                    <a href="index.php?page=Maintenance_Roles_Roles&orderBy=rolesdsc&orderDescending=1">Descripción<i
-                            class="fas fa-sort-up"></i></a>
+                        <a href="index.php?page=Maintenance_Roles_Roles&orderBy=rolesdsc&orderDescending=1">Descripción <i class="fas fa-sort-up"></i></a>
                     {{endif OrderRolesdsc}}
                 </th>
                 <th>Estado</th>
-                <th><a href="index.php?page=Maintenance_Roles_Rol&mode=INS">Nuevo</a></th>
+                <th>Acciones</th>
+                <th>
+                    <a href="index.php?page=Maintenance_Roles_Rol&mode=INS" class="">Nuevo</a>
+                </th>
             </tr>
         </thead>
         <tbody>
             {{foreach roles}}
             <tr>
-                <td>{{rolescod}}</td>
+                <td>
+                    <a class="link" href="index.php?page=Maintenance_Roles_Rol&mode=DSP&rolescod={{rolescod}}">
+                        {{rolescod}}
+                    </a>
+                </td>
                 <td>{{rolesdsc}}</td>
                 <td class="center">{{rolesestDsc}}</td>
                 <td class="center">
-                    <a href="index.php?page=Maintenance_Roles_Rol&mode=UPD&id={{rolescod}}">Editar</a>
+                    <a href="index.php?page=Maintenance_Roles_Rol&mode=UPD&rolescod={{rolescod}}">Editar</a>
                     &nbsp;
-                    <a href="index.php?page=Maintenance_Roles_Rol&mode=DEL&id={{rolescod}}">Eliminar</a>
+                    <a href="index.php?page=Maintenance_Roles_Rol&mode=DEL&rolescod={{rolescod}}">Eliminar</a>
                 </td>
             </tr>
             {{endfor roles}}
