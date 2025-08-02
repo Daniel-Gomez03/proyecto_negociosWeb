@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{SITE_TITLE}}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{BASE_DIR}}/public/css/appstyle.css" />
+
+    <script src="https://kit.fontawesome.com/{{FONT_AWESOME_KIT}}.js" crossorigin="anonymous"></script>
+
+    {{foreach SiteLinks}}
+    <link rel="stylesheet" href="{{~BASE_DIR}}/{{this}}" />
+    {{endfor SiteLinks}}
+    {{foreach BeginScripts}}
+    <script src="{{~BASE_DIR}}/{{this}}"></script>
+    {{endfor BeginScripts}}
+</head>
+
+<body>
+    <header class="main-header">
+        <input type="checkbox" class="menu_toggle" id="menu_toggle" />
+        <label for="menu_toggle" class="menu_toggle_icon">
+            <div class="hmb dgn pt-1"></div>
+            <div class="hmb hrz"></div>
+            <div class="hmb dgn pt-2"></div>
+        </label>
+
+        <div class="site-title">
+            <a href="index.php?page=Index">{{SITE_TITLE}}</a>
+        </div>
+
+        <nav id="menu">
+            <ul>
+                <li><a href="index.php?page={{PRIVATE_DEFAULT_CONTROLLER}}"><i class="fas fa-home"></i>Inicio</a></li>
+                <li><a href="index.php?page=Checkout_Catalogo"><i class="fas fa-table"></i> Catálogo</a></li>
+                <li><a href="index.php?page=Checkout_Checkout"><i class="fas fa-shopping-cart"></i> Carretilla de
+                        Compra</a></li>
+                <li><a href="index.php?page=Orders_History"><i class="fas fa-receipt"></i> Historial de Pedidos</a></li>
+                <li><a href="index.php?page=sec_logout"><i class="fas fa-sign-out-alt"></i>Salir</a></li>
+            </ul>
+        </nav>
+
+        <div class="header-actions">
+            {{if ~CART_ITEMS}}
+            <a href="index.php?page=Checkout_Checkout" class="cart-link">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="cart-count">{{~CART_ITEMS}}</span>
+            </a>
+            {{endif ~CART_ITEMS}}
+
+            {{with login}}
+            <div class="user-menu">
+                <span class="username">{{userName}}</span>
+                <a href="index.php?page=sec_logout" class="logout-link" title="Cerrar Sesión">
+                    <i class="fas fa-sign-out-alt"></i>
+                </a>
+            </div>
+            {{endwith login}}
+        </div>
+    </header>
+    <main>
+        {{{page_content}}}
+    </main>
+    <footer class="main-footer" id="contacto">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>{{SITE_TITLE}}</h4>
+                <p>Especialistas en modelismo y coleccionables</p>
+                <p>Tegucigalpa, Honduras</p>
+            </div>
+
+            <div class="footer-section">
+                <h4>Contacto</h4>
+                <p><i class="fas fa-phone"></i> +504 3154-8419</p>
+            </div>
+
+            <div class="footer-section">
+                <h4>Síguenos</h4>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/hasbun.sh/" target="_blank">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    <a href="https://www.instagram.com/hasbun_shop/" target="_blank">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; {{~CURRENT_YEAR}} {{SITE_TITLE}}. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+    {{foreach EndScripts}}
+    <script src="{{~BASE_DIR}}/{{this}}"></script>
+    {{endfor EndScripts}}
+</body>
+
+</html>

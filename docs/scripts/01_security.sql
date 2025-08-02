@@ -1,4 +1,4 @@
--- Active: 1750517049055@@127.0.0.1@3306@hasbunstore
+-- Active: 1754104335999@@127.0.0.1@3306@hasbunstore
 use hasbunstore
 
 CREATE TABLE
@@ -66,3 +66,6 @@ CREATE TABLE
         CONSTRAINT `rol_funcion_key` FOREIGN KEY (`fncod`) REFERENCES `funciones` (`fncod`) ON DELETE NO ACTION ON UPDATE NO ACTION
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
+
+SELECT * FROM roles_usuarios LIMIT 100;
+SELECT * FROM usuario LIMIT 100;

@@ -18,17 +18,17 @@
   ],
   "private": [
     {
-      "id": "Menu_PaymentCheckout",
+      "id": "Menu_Checkout_Checkout",
       "nav_url": "index.php?page=Checkout_Checkout",
       "nav_label": "Carretilla de Compra"
     },
     {
-      "id": "Menu_Catalog",
+      "id": "Menu_Checkout_Catalogo",
       "nav_url": "index.php?page=Checkout_Catalogo",
       "nav_label": "<i class=\"fas fa-table\"></i>&nbsp;Catálogo"
     },
     {
-      "id": "Menu_OrdersHistory",
+      "id": "Menu_Orders_History",
       "nav_url": "index.php?page=Orders_History",
       "nav_label": "<i class=\"fas fa-table\"></i>&nbsp;Historial de Pedidos"
     },
