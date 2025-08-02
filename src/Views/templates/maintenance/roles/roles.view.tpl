@@ -1,4 +1,4 @@
-<h1>Roles</h1>
+<h1>Administración de Roles</h1>
 <section class="grid">
     <div class="row">
         <form class="col-12 col-m-8" action="index.php" method="get">
