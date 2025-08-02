@@ -1,4 +1,4 @@
--- Active: 1754104335999@@127.0.0.1@3306@hasbunstore
+-- Active: 1750517049055@@127.0.0.1@3306@hasbunstore
 use hasbunstore
 
 CREATE TABLE

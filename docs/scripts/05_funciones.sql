@@ -1,5 +1,3 @@
--- Active: 1754104335999@@127.0.0.1@3306@hasbunstore
-
 INSERT INTO `roles` (
     `rolescod`,
     `rolesdsc`,

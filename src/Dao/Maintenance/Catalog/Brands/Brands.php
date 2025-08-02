@@ -1,3 +1,4 @@
+-- Active: 1750517049055@@127.0.0.1@3306
 <?php
 namespace Dao\Maintenance\Catalog\Brands;
 
