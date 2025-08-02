@@ -1,26 +1,6 @@
 <?php
-
-/**
- * PHP Version 7.2
- *
- * @category Utility
- * @package  Views
- * @author   Orlando J Betancourth <orlando.betancourth@gmail.com>
- * @license  MIT http://
- * @version  CVS:1.0.0
- * @link     http://
- */
 namespace Views;
 
-/**
- * Renderer View Utility
- *
- * @category Utility
- * @package  Views
- * @author   Orlando J Betancourth <orlando.betancourth@gmail.com>
- * @license  MIT http://
- * @link     http://
- */
 class Renderer
 {
     /**

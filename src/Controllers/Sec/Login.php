@@ -58,15 +58,29 @@ class Login extends \Controllers\PublicController
                     }
 
                     if (!$this->hasError) {
+                        // 1. Verificamos el rol del usuario para decidir qué layout usar.
+                        if (\Dao\Security\Security::isUsuarioInRol($dbUser['usercod'], 'ADM')) {
+                            \Utilities\Context::setContext('layoutFile', 'privatelayout.view.tpl');
+                        } else {
+                            \Utilities\Context::setContext('layoutFile', 'privatelayout_cliente.view.tpl');
+                        }
+
+                        // 2. Invalidamos la caché de navegación. Esto es útil para el Admin,
+                        // para que su menú siempre se recalcule con los permisos actuales.
+                        \Utilities\Nav::invalidateNavData();
+
+                        // 3. Establecemos la sesión del usuario.
                         \Utilities\Security::login(
                             $dbUser["usercod"],
                             $dbUser["username"],
                             $dbUser["useremail"]
                         );
                         
+                        // 4. Movemos los artículos del carrito anónimo al carrito del usuario.
                         $anonCod = CartFns::getAnnonCartCode();
                         Cart::moveAnonToAuth($anonCod, $dbUser["usercod"]);
                         
+                        // 5. Redirigimos al usuario a la página correspondiente.
                         if (\Utilities\Context::getContextByKey("redirto") !== "") {
                             \Utilities\Site::redirectTo(
                                 \Utilities\Context::getContextByKey("redirto")
@@ -91,5 +105,4 @@ class Login extends \Controllers\PublicController
         \Views\Renderer::render("security/login", $dataView);
     }
 }
-
 ?>

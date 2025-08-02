@@ -36,9 +36,9 @@
     <nav id="menu">
       <ul>
         <li><a href="index.php?page={{PRIVATE_DEFAULT_CONTROLLER}}"><i class="fas fa-home"></i>Inicio</a></li>
-        {{foreach PRIVATE_NAVIGATION}}
+        {{foreach NAVIGATION}}
         <li><a href="{{nav_url}}"><i class="fas fa-bars"></i>{{nav_label}}</a></li> 
-        {{endfor PRIVATE_NAVIGATION}}
+        {{endfor NAVIGATION}}
         <li><a href="index.php?page=sec_logout"><i class="fas fa-sign-out-alt"></i>Salir</a></li>
       </ul>
     </nav>

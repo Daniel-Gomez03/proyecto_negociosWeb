@@ -1,4 +1,4 @@
--- Active: 1750517049055@@127.0.0.1@3306@hasbunstore
+-- Active: 1754104335999@@127.0.0.1@3306@hasbunstore
 -- Table brands
 CREATE TABLE `brands` (
     `brandId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
