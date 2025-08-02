@@ -12,9 +12,6 @@ VALUES
 -- Active: 1750517049055@@127.0.0.1@3306@hasbunstore
 
 
-
-
-
 INSERT INTO `funciones` (
     `fncod`,
     `fndsc`,
