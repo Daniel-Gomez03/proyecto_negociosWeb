@@ -1,16 +1,21 @@
 <?php
 namespace Controllers\Checkout;
 
+use Controllers\PrivateController;
 use Controllers\PublicController;
 use Dao\Cart\Cart;
 use Utilities\Security;
 use Utilities\Site;
 
-class Checkout extends PublicController
+class Checkout extends PrivateController
 {
+     public function __construct()
+    {
+        parent::__construct();
+    }
     public function run(): void
     {
-
+        
         $viewData = array();
         $usercod = Security::getUserId();
         $carretilla = Cart::getAuthCart($usercod) ?? []; 

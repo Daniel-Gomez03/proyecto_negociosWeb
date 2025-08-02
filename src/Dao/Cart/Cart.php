@@ -1,6 +1,7 @@
 <?php
 
 namespace Dao\Cart;
+use Utilities\Cart\CartFns;
 
 class Cart extends \Dao\Table
 {
@@ -18,7 +19,7 @@ class Cart extends \Dao\Table
         $productosDisponibles = self::obtenerRegistros($sqlAllProductosActivos, array());
 
         // Sacar el stock de productos con carretilla autorizada
-        $deltaAutorizada = \Utilities\Cart\CartFns::getAuthTimeDelta();
+        $deltaAutorizada = CartFns::getAuthTimeDelta();
         $sqlCarretillaAutorizada = "SELECT productId, SUM(crrctd) as reserved
             FROM carretilla WHERE TIME_TO_SEC(TIMEDIFF(now(), crrfching)) <= :delta
             GROUP BY productId";
@@ -28,7 +29,7 @@ class Cart extends \Dao\Table
         );
 
         // Sacar el stock de productos con carretilla no autorizada
-        $deltaNAutorizada = \Utilities\Cart\CartFns::getUnAuthTimeDelta();
+        $deltaNAutorizada = CartFns::getUnAuthTimeDelta();
         $sqlCarretillaNAutorizada = "SELECT productId, SUM(crrctd) as reserved
             FROM carretillaanon WHERE TIME_TO_SEC(TIMEDIFF(now(), crrfching)) <= :delta
             GROUP BY productId";
@@ -77,8 +78,7 @@ class Cart extends \Dao\Table
 
         $producto = $productosDisponibles[0];
 
-        // Sacar el stock reservado en carretillas
-        $deltaAutorizada = \Utilities\Cart\CartFns::getAuthTimeDelta();
+        $deltaAutorizada = CartFns::getAuthTimeDelta();
         $sqlCarretillaAutorizada = "SELECT SUM(crrctd) as reserved
             FROM carretilla
             WHERE productId = :productId
@@ -89,7 +89,7 @@ class Cart extends \Dao\Table
             array("productId" => $productId, "delta" => $deltaAutorizada)
         );
 
-        $deltaNAutorizada = \Utilities\Cart\CartFns::getUnAuthTimeDelta();
+        $deltaNAutorizada = CartFns::getUnAuthTimeDelta();
         $sqlCarretillaNAutorizada = "SELECT SUM(crrctd) as reserved
             FROM carretillaanon
             WHERE productId = :productId
@@ -106,27 +106,115 @@ class Cart extends \Dao\Table
         return $producto;
     }
 
-    public static function getProductosDestacados()
+    public static function getFeaturedProducts()
     {
-        $sql = "SELECT
-                p.productId,
-                p.productName,
-                p.productDescription,
-                p.productDetails,
-                p.productPrice,
-                p.productStock,
-                p.productImgUrl,
-                p.productStatus,
-                b.brandName,
-                c.categoryName
-            FROM products p
-            INNER JOIN brands b ON p.productBrandId = b.brandId
-            INNER JOIN categories c ON p.productCategoryId = c.categoryId
-            INNER JOIN highlights h ON p.productId = h.productId
-            WHERE h.highlightStart <= NOW() AND h.highlightEnd >= NOW()
-            AND p.productStatus = 'ACT'";
+        $sqlstr = "SELECT 
+            p.productId, 
+            p.productName, 
+            p.productDescription, 
+            p.productDetails,
+            p.productPrice,
+            p.productStock,
+            p.productImgUrl, 
+            p.productStatus,
+            b.brandName,
+            c.categoryName
+        FROM products p 
+        INNER JOIN brands b ON p.productBrandId = b.brandId
+        INNER JOIN categories c ON p.productCategoryId = c.categoryId
+        INNER JOIN highlights h ON p.productId = h.productId 
+        WHERE h.highLightStart <= NOW() AND h.highLightEnd >= NOW() AND p.productStatus = 'ACT'";
+        
+        $productosDestacados = self::obtenerRegistros($sqlstr, []);
 
-        return self::obtenerRegistros($sql, array());
+        if (empty($productosDestacados)) {
+            return [];
+        }
+
+        $deltaAutorizada = CartFns::getAuthTimeDelta();
+        $sqlCarretillaAutorizada = "SELECT productId, SUM(crrctd) as reserved
+            FROM carretilla WHERE TIME_TO_SEC(TIMEDIFF(now(), crrfching)) <= :delta
+            GROUP BY productId";
+        $prodsCarretillaAutorizada = self::obtenerRegistros($sqlCarretillaAutorizada, ["delta" => $deltaAutorizada]);
+
+        $deltaNAutorizada = CartFns::getUnAuthTimeDelta();
+        $sqlCarretillaNAutorizada = "SELECT productId, SUM(crrctd) as reserved
+            FROM carretillaanon WHERE TIME_TO_SEC(TIMEDIFF(now(), crrfching)) <= :delta
+            GROUP BY productId";
+        $prodsCarretillaNAutorizada = self::obtenerRegistros($sqlCarretillaNAutorizada, ["delta" => $deltaNAutorizada]);
+
+        $productosCurados = [];
+        foreach ($productosDestacados as $producto) {
+            $productosCurados[$producto["productId"]] = $producto;
+        }
+
+        foreach ($prodsCarretillaAutorizada as $reserva) {
+            if (isset($productosCurados[$reserva["productId"]])) {
+                $productosCurados[$reserva["productId"]]["productStock"] -= $reserva["reserved"];
+            }
+        }
+
+        foreach ($prodsCarretillaNAutorizada as $reserva) {
+            if (isset($productosCurados[$reserva["productId"]])) {
+                $productosCurados[$reserva["productId"]]["productStock"] -= $reserva["reserved"];
+            }
+        }
+        
+        return array_values($productosCurados);
+    }
+
+    public static function getNewProducts()
+    {
+        $sqlstr = "SELECT 
+            p.productId, 
+            p.productName, 
+            p.productDescription, 
+            p.productDetails,
+            p.productPrice,
+            p.productStock,
+            p.productImgUrl, 
+            p.productStatus,
+            b.brandName,
+            c.categoryName
+        FROM products p 
+        INNER JOIN brands b ON p.productBrandId = b.brandId
+        INNER JOIN categories c ON p.productCategoryId = c.categoryId
+        WHERE p.productStatus = 'ACT' 
+        ORDER BY p.productId DESC 
+        LIMIT 3";
+        
+        $nuevosProductos = self::obtenerRegistros($sqlstr, []);
+        
+        if (empty($nuevosProductos)) {
+            return [];
+        }
+
+        $deltaAutorizada = CartFns::getAuthTimeDelta();
+        $sqlCarretillaAutorizada = "SELECT productId, SUM(crrctd) as reserved FROM carretilla WHERE TIME_TO_SEC(TIMEDIFF(now(), crrfching)) <= :delta GROUP BY productId";
+        $prodsCarretillaAutorizada = self::obtenerRegistros($sqlCarretillaAutorizada, ["delta" => $deltaAutorizada]);
+
+        $deltaNAutorizada = CartFns::getUnAuthTimeDelta();
+        $sqlCarretillaNAutorizada = "SELECT productId, SUM(crrctd) as reserved FROM carretillaanon WHERE TIME_TO_SEC(TIMEDIFF(now(), crrfching)) <= :delta GROUP BY productId";
+        $prodsCarretillaNAutorizada = self::obtenerRegistros($sqlCarretillaNAutorizada, ["delta" => $deltaNAutorizada]);
+
+        $productosCurados = [];
+        foreach ($nuevosProductos as $producto) {
+            $productosCurados[$producto["productId"]] = $producto;
+        }
+
+        foreach ($prodsCarretillaAutorizada as $reserva) {
+            if (isset($productosCurados[$reserva["productId"]])) {
+                $productosCurados[$reserva["productId"]]["productStock"] -= $reserva["reserved"];
+            }
+        }
+
+        foreach ($prodsCarretillaNAutorizada as $reserva) {
+            if (isset($productosCurados[$reserva["productId"]])) {
+                $productosCurados[$reserva["productId"]]["productStock"] -= $reserva["reserved"];
+            }
+        }
+
+        return array_values($productosCurados);
     }
 
     public static function addToAnonCart(
@@ -259,19 +347,5 @@ class Cart extends \Dao\Table
             'productId' => $productId,
             'quantity' => $quantity
         ]) > 0;
-    }
-
-    public static function getProducto($productId)
-    {
-        $sql = "SELECT
-                p.*,
-                b.brandName,
-                c.categoryName
-            FROM products p
-            INNER JOIN brands b ON p.productBrandId = b.brandId
-            INNER JOIN categories c ON p.productCategoryId = c.categoryId
-            WHERE p.productId = :productId";
-
-        return self::obtenerUnRegistro($sql, array("productId" => $productId));
     }
 }

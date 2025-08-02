@@ -1,6 +1,7 @@
 <?php
 namespace Controllers\Checkout;
 
+use Controllers\PrivateController;
 use Controllers\PublicController;
 use Utilities\Site;
 use Utilities\PayPal\PayPalRestApi;
@@ -11,11 +12,14 @@ use Dao\Orders\Order;
 use DateTime;
 use DateTimeZone;
 
-class Accept extends PublicController
+class Accept extends PrivateController
 {
+     public function __construct()
+    {
+        parent::__construct();
+    }
     public function run(): void
     {
-        Site::addLink("public/css/invoice.css");
 
         $dataview = [
             'order' => null,

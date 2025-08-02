@@ -11,8 +11,6 @@ class Catalogo extends PublicController
 {
     public function run(): void
     {
-        Site::addLink("public/css/catalogo.css");
-
         if ($this->isPostBack()) {
             $this->handleCartActions();
         }

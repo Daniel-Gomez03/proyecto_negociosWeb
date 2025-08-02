@@ -36,18 +36,23 @@ class Register extends PublicController
                 $this->hasErrors = true;
             }
 
-            if(\Dao\Security\Security::getEmail($this->txtEmail)){
+            if(\Dao\Security\Security::getUsuarioByEmail($this->txtEmail)){
                 $this->errorEmail = "El correo ya se encuentra registrado.";
                 $this->hasErrors = true;
             }
 
             if (!$this->hasErrors) {
                 try{
-                    if (\Dao\Security\Security::newUsuario($this->txtEmail, $this->txtPswd,$this->txtUser)) {
-                        \Utilities\Site::redirectToWithMsg("index.php?page=sec_login", "¡Usuario Registrado Satisfactoriamente!");
+                    if (\Dao\Security\Security::newUsuario(
+                        $this->txtEmail, 
+                        $this->txtPswd, 
+                        $this->txtUser)) {
+                        \Utilities\Site::redirectToWithMsg(
+                            "index.php?page=sec_login", 
+                            "¡Usuario Registrado Satisfactoriamente!");
                     }
-                } catch (Error $ex){
-                    die($ex);
+                } catch (Exception $ex){ 
+                    die($ex->getMessage());
                 }
             }
         }

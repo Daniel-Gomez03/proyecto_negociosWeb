@@ -2,6 +2,7 @@
 
 namespace Controllers\Orders;
 
+use Controllers\PrivateController;
 use Controllers\PublicController;
 use Dao\Orders\Order;
 use Utilities\Security;
@@ -9,11 +10,14 @@ use Utilities\Site;
 use DateTime;
 use DateTimeZone;
 
-class Detail extends PublicController
+class Detail extends PrivateController
 {
+    public function __construct()
+    {
+        parent::__construct();
+    }
     public function run(): void
     {
-        Site::addLink("public/css/invoice.css");
 
         if (!Security::isLogged()) {
             Site::redirectToWithMsg("index.php?page=sec_login", "Debes iniciar sesión para ver tus órdenes.");
@@ -51,7 +55,6 @@ class Detail extends PublicController
 
     private function formatOrderForView(array $dbOrder, array $dbOrderDetails, ?array $paypalData): array
     {
-        // Fallback por si el JSON estuviera corrupto
         if (is_null($paypalData)) {
             $paypalData = [];
         }
@@ -65,7 +68,7 @@ class Detail extends PublicController
                 'quantity' => $item['quantity'],
                 'unit_amount' => number_format($item['price'], 2),
                 'subtotal' => number_format($item['subtotal'], 2),
-                'currency_code' => 'USD' // Asumimos USD o la moneda que uses
+                'currency_code' => 'USD'
             ];
             $itemsSubtotal += floatval($item['subtotal']);
         }

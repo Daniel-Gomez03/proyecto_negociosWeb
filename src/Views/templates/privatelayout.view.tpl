@@ -5,10 +5,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{SITE_TITLE}}</title>
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{BASE_DIR}}/public/css/appstyle.css" />
+
   <script src="https://kit.fontawesome.com/{{FONT_AWESOME_KIT}}.js" crossorigin="anonymous"></script>
+
   {{foreach SiteLinks}}
   <link rel="stylesheet" href="{{~BASE_DIR}}/{{this}}" />
   {{endfor SiteLinks}}
@@ -18,38 +21,45 @@
 </head>
 
 <body>
-  <header>
+  <header class="main-header">
     <input type="checkbox" class="menu_toggle" id="menu_toggle" />
     <label for="menu_toggle" class="menu_toggle_icon">
       <div class="hmb dgn pt-1"></div>
       <div class="hmb hrz"></div>
       <div class="hmb dgn pt-2"></div>
     </label>
-    <h1>{{SITE_TITLE}}</h1>
+
+    <div class="site-title">
+      <a href="index.php?page=Index">{{SITE_TITLE}}</a>
+    </div>
+
     <nav id="menu">
       <ul>
-        <li><a href="index.php?page={{PRIVATE_DEFAULT_CONTROLLER}}"><i class="fas fa-home"></i>&nbsp;Inicio</a></li>
-        {{foreach NAVIGATION}}
-        <li><a href="{{nav_url}}">{{nav_label}}</a></li>
-        {{endfor NAVIGATION}}
-        <li><a href="index.php?page=sec_logout"><i class="fas fa-sign-out-alt"></i>&nbsp;Salir</a></li>
+        <li><a href="index.php?page={{PRIVATE_DEFAULT_CONTROLLER}}"><i class="fas fa-home"></i>Inicio</a></li>
+        {{foreach PRIVATE_NAVIGATION}}
+        <li><a href="{{nav_url}}"><i class="fas fa-bars"></i>{{nav_label}}</a></li> 
+        {{endfor PRIVATE_NAVIGATION}}
+        <li><a href="index.php?page=sec_logout"><i class="fas fa-sign-out-alt"></i>Salir</a></li>
       </ul>
     </nav>
-    <span>
+
+    <div class="header-actions">
       {{if ~CART_ITEMS}}
-      <a href="index.php?page=Checkout_Checkout">
+      <a href="index.php?page=Checkout_Checkout" class="cart-link">
         <i class="fa-solid fa-cart-shopping"></i>
+        <span class="cart-count">{{~CART_ITEMS}}</span>
       </a>
-      {{~CART_ITEMS}}
       {{endif ~CART_ITEMS}}
-    </span>
-    {{with login}}
-    <span class="username">{{userName}}
-      <a href="index.php?page=sec_logout">
-        <i class="fas fa-sign-out-alt"></i>
-      </a>
-    </span>
-    {{endwith login}}
+
+      {{with login}}
+      <div class="user-menu">
+        <span class="username">{{userName}}</span>
+        <a href="index.php?page=sec_logout" class="logout-link" title="Cerrar Sesión">
+          <i class="fas fa-sign-out-alt"></i>
+        </a>
+      </div>
+      {{endwith login}}
+    </div>
   </header>
   <main>
     {{{page_content}}}
@@ -64,7 +74,7 @@
 
       <div class="footer-section">
         <h4>Contacto</h4>
-        <p><i class="fas fa-phone"></i> ‪+504 3154-8419‬</p>
+        <p><i class="fas fa-phone"></i> +504 3154-8419</p>
       </div>
 
       <div class="footer-section">
@@ -78,10 +88,9 @@
           </a>
         </div>
       </div>
-    </div>
-
-    <div class="footer-bottom">
-      <p>&copy; {{~CURRENT_YEAR}} {{SITE_TITLE}}. Todos los derechos reservados.</p>
+      <div class="footer-bottom">
+        <p>&copy; {{~CURRENT_YEAR}} {{SITE_TITLE}}. Todos los derechos reservados.</p>
+      </div>
     </div>
   </footer>
   {{foreach EndScripts}}
@@ -89,4 +98,4 @@
   {{endfor EndScripts}}
 </body>
 
-</html> ]
+</html>

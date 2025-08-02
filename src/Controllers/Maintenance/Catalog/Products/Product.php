@@ -19,6 +19,8 @@ class Product extends PrivateController
 
     public function __construct()
     {
+        parent::__construct();
+
         $this->viewData = [
             "mode" => "",
             "productId" => 0,

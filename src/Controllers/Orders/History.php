@@ -2,6 +2,7 @@
 
 namespace Controllers\Orders;
 
+use Controllers\PrivateController;
 use Controllers\PublicController;
 use Utilities\Security;
 use Utilities\Site;
@@ -9,11 +10,14 @@ use Dao\Orders\Order;
 use DateTime;
 use DateTimeZone;
 
-class History extends PublicController
+class History extends PrivateController
 {
+    public function __construct()
+    {
+        parent::__construct();
+    }
     public function run(): void
     {
-        Site::addLink("public/css/history.css");
         // 1. Verificar si el usuario ha iniciado sesión
         if (!Security::isLogged()) {
             Site::redirectTo("index.php?page=sec_login&returnto=index.php?page=Orders_History");

@@ -17,6 +17,8 @@ class Category extends PrivateController
 
     public function __construct()
     {
+ 
+
         $this->viewData = [
             "mode" => "",
             "categoryId" => 0,

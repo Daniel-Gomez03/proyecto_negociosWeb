@@ -33,14 +33,19 @@
       "nav_label": "<i class=\"fas fa-table\"></i>&nbsp;Historial de Pedidos"
     },
     {
-      "id": "Brands_table",
+      "id": "Menu_Maintenance_Catalog_Brands_Brands",
       "nav_url": "index.php?page=Maintenance_Catalog_Brands_Brands",
-      "nav_label": "<i class=\"fas fa-tags\"></i>&nbsp;Tabla Marcas"
+      "nav_label": "Administración de Marcas"
     },
     {
-      "id": "Categories_table",
+      "id": "Menu_Maintenance_Catalog_Categories_Categories",
       "nav_url": "index.php?page=Maintenance_Catalog_Categories_Categories",
-      "nav_label": "<i class=\"fas fa-list\"></i>&nbsp;Tabla Categorías"
+      "nav_label": "Administración de Categorías"
+    },
+    {
+      "id": "Menu_Maintenance_Catalog_Products_Products",
+      "nav_url": "index.php?page=Maintenance_Catalog_Products_Products",
+      "nav_label": "Administración de Productos"
     },
     {
       "id": "Menu_Maintenance_Users_Users",
@@ -56,21 +61,6 @@
       "id": "Menu_Maintenance_Funciones_Funciones",
       "nav_url": "index.php?page=Maintenance_Funciones_Funciones",
       "nav_label": "Administración de Funciones"
-    },
-    {
-      "id": "Menu_Maintenance_Catalog_Products_Products",
-      "nav_url": "index.php?page=Maintenance_Catalog_Products_Products",
-      "nav_label": "Administración de Productos"
-    },
-    {
-      "id": "Menu_Maintenance_Catalog_Categories_Categories",
-      "nav_url": "index.php?page=Maintenance_Catalog_Categories_Categories",
-      "nav_label": "Administración de Categorías"
-    },
-    {
-      "id": "Menu_Maintenance_Catalog_Brands_Brands",
-      "nav_url": "index.php?page=Maintenance_Catalog_Brands_Brands",
-      "nav_label": "Administración de Marcas"
     }
   ]
 }

@@ -20,8 +20,13 @@ class Brands extends PrivateController
     private $brandsCount = 0;
     private $pages = 0;
 
+     public function __construct()
+    {
+        parent::__construct();
+    }
     public function run(): void
     {
+
         $this->getParamsFromContext();
         $this->getParams();
         $tmpBrands = DaoBrands::getBrands(

@@ -1,16 +1,20 @@
 <?php
 namespace Controllers\Checkout;
 
+use Controllers\PrivateController;
 use Controllers\PublicController;
 use Utilities\Site;
 use Dao\Cart\Cart;
 use Utilities\Security;
 
-class Catalogo extends PublicController
+class Catalogo extends PrivateController
 {
+     public function __construct()
+    {
+        parent::__construct();
+    }
     public function run(): void
     {
-        Site::addLink("public/css/catalogo.css");
 
         if ($this->isPostBack()) {
             $this->handleCartActions();
